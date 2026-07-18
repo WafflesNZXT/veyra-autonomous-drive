@@ -57,7 +57,7 @@ export default defineConfig({
         'attached_assets',
       ),
     },
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'three'],
   },
   root: path.resolve(import.meta.dirname),
   build: {

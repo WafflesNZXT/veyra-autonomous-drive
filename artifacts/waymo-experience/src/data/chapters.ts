@@ -16,6 +16,7 @@ export interface ChapterData {
   accentColor: string;
 }
 
+// Annotation positions are in car-local coordinates (ground = y 0, +Z = front)
 export const CHAPTERS: ChapterData[] = [
   {
     id: 0,
@@ -23,7 +24,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "Scroll to explore the technology inside",
     stats: [],
     annotations: [],
-    cameraPos: [3.5, 1.8, 6],
+    cameraPos: [3.7, 1.15, 5.6],
     carRotation: [0, -0.4, 0],
     accentColor: "#00d4ff",
   },
@@ -38,10 +39,10 @@ export const CHAPTERS: ChapterData[] = [
       "2.4M data points / second",
     ],
     annotations: [
-      { id: "lidar-main", position: [0, 1.72, 0.1], label: "128-BEAM LIDAR", shortLabel: "LIDAR" },
+      { id: "lidar-main", position: [0, 1.74, -0.3], label: "128-BEAM LIDAR", shortLabel: "LIDAR" },
     ],
-    cameraPos: [1.5, 3.2, 5.5],
-    carRotation: [0.18, -0.3, 0],
+    cameraPos: [1.7, 2.9, 4.7],
+    carRotation: [0.14, -0.3, 0],
     accentColor: "#00d4ff",
   },
   {
@@ -55,9 +56,9 @@ export const CHAPTERS: ChapterData[] = [
       "Tracks velocity of all objects",
     ],
     annotations: [
-      { id: "front-radar", position: [0, 0.52, 2.55], label: "LONG-RANGE RADAR", shortLabel: "RADAR" },
+      { id: "front-radar", position: [0, 0.45, 2.56], label: "LONG-RANGE RADAR", shortLabel: "RADAR" },
     ],
-    cameraPos: [0, 1.0, 7.5],
+    cameraPos: [0, 0.55, 6.6],
     carRotation: [0, 0, 0],
     accentColor: "#ff6b35",
   },
@@ -72,11 +73,11 @@ export const CHAPTERS: ChapterData[] = [
       "Reads signals, markings, pedestrians",
     ],
     annotations: [
-      { id: "cam-fl", position: [0.97, 0.92, 1.8], label: "FRONT-LEFT CAM", shortLabel: "CAM" },
-      { id: "cam-fr", position: [-0.97, 0.92, 1.8], label: "FRONT-RIGHT CAM", shortLabel: "CAM" },
-      { id: "cam-side", position: [1.0, 1.1, 0.2], label: "SIDE SENSOR POD", shortLabel: "CAM" },
+      { id: "cam-fl", position: [0.9, 0.8, 1.5], label: "FRONT-LEFT CAM", shortLabel: "CAM" },
+      { id: "cam-fr", position: [-0.9, 0.8, 1.5], label: "FRONT-RIGHT CAM", shortLabel: "CAM" },
+      { id: "cam-side", position: [0.92, 0.8, -0.3], label: "SIDE SENSOR POD", shortLabel: "CAM" },
     ],
-    cameraPos: [4.5, 1.5, 4.5],
+    cameraPos: [4.6, 1.0, 4.0],
     carRotation: [0, 0.55, 0],
     accentColor: "#a855f7",
   },
@@ -91,12 +92,12 @@ export const CHAPTERS: ChapterData[] = [
       "Safe low-speed maneuvering",
     ],
     annotations: [
-      { id: "ultra-fl", position: [0.85, 0.22, 2.52], label: "ULTRASONIC", shortLabel: "US" },
-      { id: "ultra-fr", position: [-0.85, 0.22, 2.52], label: "ULTRASONIC", shortLabel: "US" },
-      { id: "ultra-rl", position: [0.85, 0.22, -2.52], label: "ULTRASONIC", shortLabel: "US" },
+      { id: "ultra-fl", position: [0.62, 0.3, 2.53], label: "ULTRASONIC", shortLabel: "US" },
+      { id: "ultra-fr", position: [-0.62, 0.3, 2.53], label: "ULTRASONIC", shortLabel: "US" },
+      { id: "ultra-rl", position: [0.62, 0.3, -2.5], label: "ULTRASONIC", shortLabel: "US" },
     ],
-    cameraPos: [3.5, 0.4, 5.5],
-    carRotation: [0.1, 0.35, 0],
+    cameraPos: [3.6, 0.4, 5.0],
+    carRotation: [0.06, 0.35, 0],
     accentColor: "#22c55e",
   },
   {
@@ -110,9 +111,9 @@ export const CHAPTERS: ChapterData[] = [
       "Real-time decisions in <8ms",
     ],
     annotations: [
-      { id: "compute", position: [0, 0.85, -2.4], label: "AI COMPUTE UNIT", shortLabel: "CPU" },
+      { id: "compute", position: [0, 0.98, -1.9], label: "AI COMPUTE UNIT", shortLabel: "CPU" },
     ],
-    cameraPos: [-3.5, 1.8, -5.5],
+    cameraPos: [-3.4, 1.5, -5.2],
     carRotation: [0, Math.PI + 0.3, 0],
     accentColor: "#f59e0b",
   },
@@ -127,13 +128,13 @@ export const CHAPTERS: ChapterData[] = [
       "Available in 50+ cities worldwide",
     ],
     annotations: [
-      { id: "f-lidar", position: [0, 1.72, 0.1], label: "LIDAR", shortLabel: "LIDAR" },
-      { id: "f-radar", position: [0, 0.52, 2.55], label: "RADAR", shortLabel: "RADAR" },
-      { id: "f-cam-l", position: [0.97, 0.92, 1.8], label: "CAMERA", shortLabel: "CAM" },
-      { id: "f-cam-r", position: [-0.97, 0.92, 1.8], label: "CAMERA", shortLabel: "CAM" },
-      { id: "f-compute", position: [0, 0.85, -2.4], label: "COMPUTE", shortLabel: "CPU" },
+      { id: "f-lidar", position: [0, 1.74, -0.3], label: "LIDAR", shortLabel: "LIDAR" },
+      { id: "f-radar", position: [0, 0.45, 2.56], label: "RADAR", shortLabel: "RADAR" },
+      { id: "f-cam-l", position: [0.9, 0.8, 1.5], label: "CAMERA", shortLabel: "CAM" },
+      { id: "f-cam-r", position: [-0.9, 0.8, 1.5], label: "CAMERA", shortLabel: "CAM" },
+      { id: "f-compute", position: [0, 0.98, -1.9], label: "COMPUTE", shortLabel: "CPU" },
     ],
-    cameraPos: [3.5, 2.2, 6],
+    cameraPos: [3.9, 1.6, 5.8],
     carRotation: [0, 0.2, 0],
     accentColor: "#00d4ff",
   },

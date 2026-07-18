@@ -1,326 +1,351 @@
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
-// Original robotaxi design — purpose-built autonomous shuttle with distinctive silhouette
+/**
+ * Original concept robotaxi — built from smooth extruded curve profiles,
+ * not boxes. Low aerodynamic body, raked glass canopy, wheel-arch cutouts,
+ * turbine aero wheels, roof LiDAR module with spinning scan element.
+ *
+ * Coordinate system: +Z = front, Y up, ground at y=0.
+ */
+
+function buildBodyGeometry(): THREE.BufferGeometry {
+  // Side profile (shape X = car Z length axis, shape Y = height)
+  const s = new THREE.Shape();
+  s.moveTo(2.25, 0.18);
+  // Front fascia — forward-leaning, slight undercut
+  s.quadraticCurveTo(2.44, 0.28, 2.4, 0.5);
+  // Hood — long, gently falling toward windshield
+  s.quadraticCurveTo(2.08, 0.68, 1.35, 0.73);
+  // Beltline — rises subtly toward the rear haunch
+  s.quadraticCurveTo(0.2, 0.82, -1.4, 0.86);
+  // Rear shoulder — muscular taper down
+  s.quadraticCurveTo(-2.1, 0.86, -2.32, 0.66);
+  // Rear face — slight ducktail undercut
+  s.quadraticCurveTo(-2.43, 0.42, -2.33, 0.18);
+  // Bottom edge with wheel-arch cutouts
+  s.lineTo(-1.93, 0.18);
+  s.absarc(-1.45, 0.18, 0.48, Math.PI, 0, true); // rear arch
+  s.lineTo(0.97, 0.18);
+  s.absarc(1.45, 0.18, 0.48, Math.PI, 0, true); // front arch
+  s.lineTo(2.25, 0.18);
+
+  const geo = new THREE.ExtrudeGeometry(s, {
+    depth: 1.5,
+    bevelEnabled: true,
+    bevelThickness: 0.14,
+    bevelSize: 0.12,
+    bevelSegments: 8,
+    curveSegments: 40,
+  });
+  geo.translate(0, 0, -0.75);
+  geo.rotateY(-Math.PI / 2);
+  // Weld vertices + recompute normals => smooth automotive surface
+  const merged = mergeVertices(geo, 1e-4);
+  merged.computeVertexNormals();
+  return merged;
+}
+
+function buildCanopyGeometry(): THREE.BufferGeometry {
+  // Glass greenhouse — raked windshield, curved roof, fastback rear glass
+  const s = new THREE.Shape();
+  s.moveTo(1.12, 0.68);
+  s.quadraticCurveTo(0.72, 1.04, 0.3, 1.24);   // windshield rake
+  s.quadraticCurveTo(-0.35, 1.36, -0.95, 1.28); // roof crown
+  s.quadraticCurveTo(-1.5, 1.12, -1.78, 0.82);  // fastback rear glass
+  s.lineTo(-1.78, 0.68);
+  s.lineTo(1.12, 0.68);
+
+  const geo = new THREE.ExtrudeGeometry(s, {
+    depth: 1.26,
+    bevelEnabled: true,
+    bevelThickness: 0.06,
+    bevelSize: 0.05,
+    bevelSegments: 5,
+    curveSegments: 36,
+  });
+  geo.translate(0, 0, -0.63);
+  geo.rotateY(-Math.PI / 2);
+  const merged = mergeVertices(geo, 1e-4);
+  merged.computeVertexNormals();
+  return merged;
+}
+
 export function CarModel() {
   const groupRef = useRef<THREE.Group>(null);
-  const floatOffset = useRef(Math.random() * Math.PI * 2);
+  const lidarBladeRef = useRef<THREE.Group>(null);
+
+  const bodyGeo = useMemo(buildBodyGeometry, []);
+  const canopyGeo = useMemo(buildCanopyGeometry, []);
 
   const mat = useMemo(() => ({
     body: new THREE.MeshPhysicalMaterial({
-      color: 0x080c14,
-      metalness: 0.92,
-      roughness: 0.12,
+      color: 0x0b0e16,
+      metalness: 0.9,
+      roughness: 0.08,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.08,
-      reflectivity: 1.0,
-    }),
-    bodyDark: new THREE.MeshPhysicalMaterial({
-      color: 0x050810,
-      metalness: 0.85,
-      roughness: 0.2,
-      clearcoat: 0.6,
+      clearcoatRoughness: 0.06,
+      envMapIntensity: 1.5,
     }),
     glass: new THREE.MeshPhysicalMaterial({
-      color: 0x061828,
-      metalness: 0.1,
+      color: 0x060c16,
+      metalness: 0.35,
+      roughness: 0.03,
+      envMapIntensity: 2.4,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.02,
+    }),
+    trim: new THREE.MeshStandardMaterial({
+      color: 0x05070a,
+      metalness: 0.4,
+      roughness: 0.55,
+    }),
+    sensorHousing: new THREE.MeshStandardMaterial({
+      color: 0x0c1018,
+      metalness: 0.75,
+      roughness: 0.25,
+      envMapIntensity: 1.2,
+    }),
+    lens: new THREE.MeshPhysicalMaterial({
+      color: 0x02060c,
+      metalness: 0.2,
       roughness: 0.05,
-      transmission: 0.6,
-      transparent: true,
-      opacity: 0.75,
-      ior: 1.5,
+      envMapIntensity: 2.5,
     }),
     tire: new THREE.MeshStandardMaterial({
-      color: 0x0a0a0a,
+      color: 0x060606,
       metalness: 0.0,
       roughness: 0.95,
     }),
     rim: new THREE.MeshStandardMaterial({
-      color: 0x1a1a2e,
-      metalness: 0.9,
-      roughness: 0.25,
+      color: 0x14161f,
+      metalness: 0.95,
+      roughness: 0.18,
+      envMapIntensity: 1.4,
     }),
-    rimAccent: new THREE.MeshStandardMaterial({
-      color: 0x00d4ff,
-      metalness: 1.0,
-      roughness: 0.1,
-      emissive: new THREE.Color(0x00d4ff),
-      emissiveIntensity: 0.6,
+    rimSlot: new THREE.MeshStandardMaterial({
+      color: 0x030405,
+      metalness: 0.5,
+      roughness: 0.6,
     }),
-    headlight: new THREE.MeshBasicMaterial({ color: 0xeafaff }),
-    headlightGlow: new THREE.MeshBasicMaterial({
-      color: 0x80e0ff,
+    hubGlow: new THREE.MeshBasicMaterial({ color: 0x00d4ff }),
+    lightBar: new THREE.MeshBasicMaterial({ color: 0xd8fbff }),
+    headlight: new THREE.MeshBasicMaterial({ color: 0xbdf3ff }),
+    taillight: new THREE.MeshBasicMaterial({ color: 0xff2438 }),
+    lidarGlow: new THREE.MeshBasicMaterial({ color: 0x00e5ff }),
+    lidarGlass: new THREE.MeshPhysicalMaterial({
+      color: 0x041018,
+      metalness: 0.1,
+      roughness: 0.08,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.85,
+      envMapIntensity: 2.0,
     }),
-    taillight: new THREE.MeshBasicMaterial({ color: 0xff2020 }),
-    sensorDark: new THREE.MeshStandardMaterial({
-      color: 0x0d1020,
-      metalness: 0.7,
-      roughness: 0.3,
+    beltAccent: new THREE.MeshBasicMaterial({
+      color: 0x0e5468,
+      transparent: true,
+      opacity: 0.65,
     }),
-    lidarRing: new THREE.MeshStandardMaterial({
-      color: 0x00d4ff,
-      metalness: 1,
-      roughness: 0.1,
-      emissive: new THREE.Color(0x00d4ff),
-      emissiveIntensity: 1.2,
+    stage: new THREE.MeshStandardMaterial({
+      color: 0x05070c,
+      metalness: 0.65,
+      roughness: 0.35,
+      envMapIntensity: 0.8,
     }),
-    accent: new THREE.MeshBasicMaterial({
+    stageRing: new THREE.MeshBasicMaterial({
       color: 0x00d4ff,
       transparent: true,
-      opacity: 0.9,
-    }),
-    accentSubtle: new THREE.MeshBasicMaterial({
-      color: 0x0088aa,
-      transparent: true,
-      opacity: 0.5,
-    }),
-    underfloor: new THREE.MeshStandardMaterial({
-      color: 0x030508,
-      metalness: 0.3,
-      roughness: 0.8,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     }),
   }), []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (groupRef.current) {
-      const t = state.clock.elapsedTime + floatOffset.current;
-      groupRef.current.position.y = Math.sin(t * 0.8) * 0.025 + Math.sin(t * 0.3) * 0.01;
+      // Barely-perceptible breathing — grounded, not floating
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.7) * 0.008;
+    }
+    if (lidarBladeRef.current) {
+      lidarBladeRef.current.rotation.y += delta * 3.2;
     }
   });
 
   return (
-    <group ref={groupRef} position={[0, 0.42, 0]}>
-
-      {/* ── LOWER BODY SILL ── */}
-      {/* Wide, flat base sill — gives the car a planted, low stance */}
-      <mesh position={[0, 0.22, 0]} material={mat.bodyDark} castShadow>
-        <boxGeometry args={[2.0, 0.44, 5.2]} />
+    <group>
+      {/* ── REVEAL STAGE ── */}
+      <mesh position={[0, -0.035, 0]} material={mat.stage} receiveShadow>
+        <cylinderGeometry args={[3.3, 3.42, 0.07, 72]} />
+      </mesh>
+      <mesh position={[0, 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]} material={mat.stageRing}>
+        <torusGeometry args={[3.3, 0.012, 8, 96]} />
+      </mesh>
+      <mesh position={[0, 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]} material={mat.stageRing}>
+        <torusGeometry args={[2.6, 0.006, 8, 96]} />
       </mesh>
 
-      {/* ── MAIN BODY ── */}
-      {/* Primary upper body shell */}
-      <mesh position={[0, 0.62, 0]} material={mat.body} castShadow>
-        <boxGeometry args={[1.92, 0.56, 5.0]} />
-      </mesh>
+      <group ref={groupRef}>
+        {/* ── BODY SHELL ── */}
+        <mesh geometry={bodyGeo} material={mat.body} castShadow />
 
-      {/* Aerodynamic nose taper (front wedge) */}
-      <mesh position={[0, 0.42, 2.32]} rotation={[0.3, 0, 0]} material={mat.body} castShadow>
-        <boxGeometry args={[1.88, 0.48, 0.65]} />
-      </mesh>
+        {/* ── GLASS CANOPY ── */}
+        <mesh geometry={canopyGeo} material={mat.glass} castShadow />
 
-      {/* Rear closure panel */}
-      <mesh position={[0, 0.42, -2.3]} rotation={[-0.12, 0, 0]} material={mat.body} castShadow>
-        <boxGeometry args={[1.88, 0.44, 0.5]} />
-      </mesh>
-
-      {/* ── HIGH-ROOF PASSENGER CABIN ── */}
-      {/* Robotaxi cabins are taller to maximize passenger headroom */}
-      <mesh position={[0, 1.28, -0.3]} material={mat.body} castShadow>
-        <boxGeometry args={[1.82, 0.92, 3.6]} />
-      </mesh>
-
-      {/* Cabin roof panel — very slightly raised center for aerodynamics */}
-      <mesh position={[0, 1.76, -0.3]} material={mat.body} castShadow>
-        <boxGeometry args={[1.78, 0.1, 3.4]} />
-      </mesh>
-
-      {/* ── SENSOR ROOF FAIRING ── */}
-      {/* Low-profile aerodynamic fairing housing LiDAR + camera cluster */}
-      <mesh position={[0, 1.88, 0.1]} material={mat.bodyDark} castShadow>
-        <boxGeometry args={[0.8, 0.12, 1.2]} />
-      </mesh>
-
-      {/* LiDAR main cylinder */}
-      <mesh position={[0, 1.98, 0.1]} material={mat.sensorDark}>
-        <cylinderGeometry args={[0.26, 0.28, 0.18, 36]} />
-      </mesh>
-      {/* LiDAR scanning ring — glows cyan */}
-      <mesh position={[0, 1.98, 0.1]} material={mat.lidarRing}>
-        <torusGeometry args={[0.27, 0.018, 12, 48]} />
-      </mesh>
-      {/* LiDAR dome top */}
-      <mesh position={[0, 2.07, 0.1]} material={mat.glass}>
-        <sphereGeometry args={[0.255, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-      </mesh>
-
-      {/* Forward camera cluster on fairing */}
-      <mesh position={[0, 1.87, 0.74]} material={mat.sensorDark}>
-        <boxGeometry args={[0.38, 0.1, 0.18]} />
-      </mesh>
-      {/* Camera lenses */}
-      <mesh position={[0.1, 1.87, 0.83]} rotation={[Math.PI / 2, 0, 0]} material={mat.glass}>
-        <cylinderGeometry args={[0.028, 0.028, 0.06, 12]} />
-      </mesh>
-      <mesh position={[-0.1, 1.87, 0.83]} rotation={[Math.PI / 2, 0, 0]} material={mat.glass}>
-        <cylinderGeometry args={[0.028, 0.028, 0.06, 12]} />
-      </mesh>
-
-      {/* ── A-PILLAR / WINDSHIELD ── */}
-      {/* Raked windshield — more vertical than a sedan, typical for shuttle */}
-      <mesh position={[0, 1.2, 1.76]} rotation={[-0.65, 0, 0]} material={mat.glass} castShadow>
-        <planeGeometry args={[1.78, 1.05]} />
-      </mesh>
-
-      {/* Rear window */}
-      <mesh position={[0, 1.2, -2.1]} rotation={[0.5, 0, 0]} material={mat.glass} castShadow>
-        <planeGeometry args={[1.74, 0.95]} />
-      </mesh>
-
-      {/* Side windows — two large passenger windows per side */}
-      {/* Left side */}
-      <mesh position={[0.962, 1.28, 0.55]} rotation={[0, Math.PI / 2, 0]} material={mat.glass}>
-        <planeGeometry args={[1.4, 0.72]} />
-      </mesh>
-      <mesh position={[0.962, 1.28, -0.95]} rotation={[0, Math.PI / 2, 0]} material={mat.glass}>
-        <planeGeometry args={[1.2, 0.72]} />
-      </mesh>
-      {/* Right side */}
-      <mesh position={[-0.962, 1.28, 0.55]} rotation={[0, -Math.PI / 2, 0]} material={mat.glass}>
-        <planeGeometry args={[1.4, 0.72]} />
-      </mesh>
-      <mesh position={[-0.962, 1.28, -0.95]} rotation={[0, -Math.PI / 2, 0]} material={mat.glass}>
-        <planeGeometry args={[1.2, 0.72]} />
-      </mesh>
-
-      {/* ── FRONT FASCIA ── distinctive face */}
-      {/* Front bumper / lower fascia */}
-      <mesh position={[0, 0.26, 2.61]} material={mat.bodyDark} castShadow>
-        <boxGeometry args={[1.88, 0.36, 0.1]} />
-      </mesh>
-
-      {/* Radar housing — centered, flush with front */}
-      <mesh position={[0, 0.52, 2.62]} material={mat.sensorDark}>
-        <boxGeometry args={[0.55, 0.18, 0.1]} />
-      </mesh>
-
-      {/* DRL/headlight bar — full-width illuminated strip */}
-      <mesh position={[0, 0.78, 2.61]} material={mat.accent}>
-        <boxGeometry args={[1.72, 0.028, 0.04]} />
-      </mesh>
-
-      {/* Headlight clusters */}
-      <mesh position={[0.72, 0.65, 2.62]} material={mat.headlight}>
-        <boxGeometry args={[0.38, 0.22, 0.06]} />
-      </mesh>
-      <mesh position={[-0.72, 0.65, 2.62]} material={mat.headlight}>
-        <boxGeometry args={[0.38, 0.22, 0.06]} />
-      </mesh>
-      {/* Headlight inner glow */}
-      <mesh position={[0.72, 0.65, 2.63]} material={mat.headlightGlow}>
-        <boxGeometry args={[0.32, 0.16, 0.02]} />
-      </mesh>
-      <mesh position={[-0.72, 0.65, 2.63]} material={mat.headlightGlow}>
-        <boxGeometry args={[0.32, 0.16, 0.02]} />
-      </mesh>
-
-      {/* Front side camera pods (replace traditional mirrors) */}
-      <group position={[1.0, 0.92, 1.8]}>
-        <mesh material={mat.bodyDark}>
-          <boxGeometry args={[0.08, 0.16, 0.28]} />
+        {/* ── UNDERBODY ── */}
+        <mesh position={[0, 0.13, 0]} material={mat.trim}>
+          <boxGeometry args={[1.6, 0.12, 3.5]} />
         </mesh>
-        <mesh position={[0.05, 0, 0.15]} material={mat.glass}>
-          <cylinderGeometry args={[0.032, 0.032, 0.04, 12]} />
+
+        {/* Side skirts */}
+        <mesh position={[0.8, 0.12, 0]} material={mat.trim}>
+          <boxGeometry args={[0.16, 0.12, 2.55]} />
         </mesh>
+        <mesh position={[-0.8, 0.12, 0]} material={mat.trim}>
+          <boxGeometry args={[0.16, 0.12, 2.55]} />
+        </mesh>
+
+        {/* Front splitter + rear diffuser */}
+        <mesh position={[0, 0.07, 2.18]} material={mat.trim}>
+          <boxGeometry args={[1.52, 0.05, 0.42]} />
+        </mesh>
+        <mesh position={[0, 0.08, -2.12]} material={mat.trim}>
+          <boxGeometry args={[1.52, 0.06, 0.45]} />
+        </mesh>
+        {[-0.45, -0.15, 0.15, 0.45].map((x) => (
+          <mesh key={`fin-${x}`} position={[x, 0.05, -2.22]} material={mat.trim}>
+            <boxGeometry args={[0.02, 0.1, 0.28]} />
+          </mesh>
+        ))}
+
+        {/* ── FRONT LIGHTING SIGNATURE ── */}
+        {/* Full-width light bar */}
+        <mesh position={[0, 0.52, 2.5]} material={mat.lightBar}>
+          <boxGeometry args={[1.56, 0.032, 0.05]} />
+        </mesh>
+        {/* Angled headlight blades */}
+        <mesh position={[0.62, 0.45, 2.47]} rotation={[0, 0.32, -0.06]} material={mat.headlight}>
+          <boxGeometry args={[0.34, 0.045, 0.04]} />
+        </mesh>
+        <mesh position={[-0.62, 0.45, 2.47]} rotation={[0, -0.32, 0.06]} material={mat.headlight}>
+          <boxGeometry args={[0.34, 0.045, 0.04]} />
+        </mesh>
+        {/* Lower intake */}
+        <mesh position={[0, 0.24, 2.4]} material={mat.trim}>
+          <boxGeometry args={[1.24, 0.15, 0.16]} />
+        </mesh>
+        {/* Radar module behind intake center */}
+        <mesh position={[0, 0.45, 2.49]} material={mat.sensorHousing}>
+          <boxGeometry args={[0.44, 0.13, 0.06]} />
+        </mesh>
+
+        {/* ── REAR LIGHTING ── */}
+        <mesh position={[0, 0.62, -2.5]} material={mat.taillight}>
+          <boxGeometry args={[1.62, 0.03, 0.05]} />
+        </mesh>
+        <mesh position={[0.68, 0.55, -2.47]} rotation={[0, -0.2, 0]} material={mat.taillight}>
+          <boxGeometry args={[0.26, 0.04, 0.04]} />
+        </mesh>
+        <mesh position={[-0.68, 0.55, -2.47]} rotation={[0, 0.2, 0]} material={mat.taillight}>
+          <boxGeometry args={[0.26, 0.04, 0.04]} />
+        </mesh>
+
+        {/* ── BELTLINE ACCENT SEAM ── */}
+        <mesh position={[0.875, 0.79, 0.1]} material={mat.beltAccent}>
+          <boxGeometry args={[0.008, 0.012, 3.7]} />
+        </mesh>
+        <mesh position={[-0.875, 0.79, 0.1]} material={mat.beltAccent}>
+          <boxGeometry args={[0.008, 0.012, 3.7]} />
+        </mesh>
+
+        {/* ── ROOF LIDAR MODULE ── */}
+        <group position={[0, 0, -0.3]}>
+          {/* Aero fairing base */}
+          <mesh position={[0, 1.36, 0]} material={mat.sensorHousing} castShadow>
+            <cylinderGeometry args={[0.3, 0.42, 0.12, 36]} />
+          </mesh>
+          {/* Main housing */}
+          <mesh position={[0, 1.48, 0]} material={mat.sensorHousing}>
+            <cylinderGeometry args={[0.24, 0.29, 0.16, 36]} />
+          </mesh>
+          {/* Glass scan band with spinning emitter blade */}
+          <mesh position={[0, 1.585, 0]} material={mat.lidarGlass}>
+            <cylinderGeometry args={[0.25, 0.25, 0.1, 36]} />
+          </mesh>
+          <group ref={lidarBladeRef} position={[0, 1.585, 0]}>
+            <mesh position={[0.09, 0, 0]} material={mat.lidarGlow}>
+              <boxGeometry args={[0.16, 0.06, 0.02]} />
+            </mesh>
+          </group>
+          {/* Emissive ring seam */}
+          <mesh position={[0, 1.53, 0]} material={mat.lidarGlow}>
+            <torusGeometry args={[0.255, 0.008, 8, 48]} />
+          </mesh>
+          {/* Cap dome */}
+          <mesh position={[0, 1.63, 0]} material={mat.sensorHousing}>
+            <sphereGeometry args={[0.24, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          </mesh>
+        </group>
+
+        {/* ── FENDER CAMERA PODS ── */}
+        {([1, -1] as const).map((side) => (
+          <group key={`fpod-${side}`} position={[side * 0.84, 0.78, 1.5]}>
+            <mesh material={mat.sensorHousing}>
+              <boxGeometry args={[0.07, 0.09, 0.22]} />
+            </mesh>
+            <mesh position={[side * 0.04, 0, 0.08]} rotation={[0, 0, side * -Math.PI / 2]} material={mat.lens}>
+              <cylinderGeometry args={[0.028, 0.028, 0.03, 14]} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* ── SIDE SENSOR PODS (B-pillar) ── */}
+        {([1, -1] as const).map((side) => (
+          <group key={`spod-${side}`} position={[side * 0.86, 0.78, -0.3]}>
+            <mesh material={mat.sensorHousing}>
+              <boxGeometry args={[0.06, 0.1, 0.3]} />
+            </mesh>
+            <mesh position={[side * 0.035, 0.01, 0]} rotation={[0, 0, side * -Math.PI / 2]} material={mat.lens}>
+              <cylinderGeometry args={[0.03, 0.03, 0.025, 14]} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* ── ULTRASONIC SENSOR DOTS ── */}
+        {[-0.62, -0.24, 0.24, 0.62].map((x) => (
+          <mesh key={`usf-${x}`} position={[x, 0.3, 2.47]} rotation={[Math.PI / 2, 0, 0]} material={mat.lens}>
+            <cylinderGeometry args={[0.026, 0.026, 0.028, 12]} />
+          </mesh>
+        ))}
+        {[-0.62, -0.24, 0.24, 0.62].map((x) => (
+          <mesh key={`usr-${x}`} position={[x, 0.3, -2.44]} rotation={[Math.PI / 2, 0, 0]} material={mat.lens}>
+            <cylinderGeometry args={[0.026, 0.026, 0.028, 12]} />
+          </mesh>
+        ))}
+
+        {/* ── REAR COMPUTE PANEL ── */}
+        <mesh position={[0, 0.88, -1.9]} material={mat.sensorHousing}>
+          <boxGeometry args={[0.92, 0.05, 0.52]} />
+        </mesh>
+        {[-0.28, 0, 0.28].map((x) => (
+          <mesh key={`vent-${x}`} position={[x, 0.91, -1.9]} material={mat.beltAccent}>
+            <boxGeometry args={[0.05, 0.008, 0.4]} />
+          </mesh>
+        ))}
+
+        {/* ── WHEELS ── */}
+        <AeroWheel position={[0.72, 0.34, 1.45]} side={1} mat={mat} />
+        <AeroWheel position={[-0.72, 0.34, 1.45]} side={-1} mat={mat} />
+        <AeroWheel position={[0.72, 0.34, -1.45]} side={1} mat={mat} />
+        <AeroWheel position={[-0.72, 0.34, -1.45]} side={-1} mat={mat} />
       </group>
-      <group position={[-1.0, 0.92, 1.8]}>
-        <mesh material={mat.bodyDark}>
-          <boxGeometry args={[0.08, 0.16, 0.28]} />
-        </mesh>
-        <mesh position={[-0.05, 0, 0.15]} material={mat.glass}>
-          <cylinderGeometry args={[0.032, 0.032, 0.04, 12]} />
-        </mesh>
-      </group>
-
-      {/* Side sensor pods — flush-mounted along mid-body (B-pillar area) */}
-      <mesh position={[1.0, 1.1, 0.2]} material={mat.sensorDark}>
-        <boxGeometry args={[0.06, 0.22, 0.38]} />
-      </mesh>
-      <mesh position={[-1.0, 1.1, 0.2]} material={mat.sensorDark}>
-        <boxGeometry args={[0.06, 0.22, 0.38]} />
-      </mesh>
-
-      {/* ── REAR FASCIA ── */}
-      <mesh position={[0, 0.26, -2.61]} material={mat.bodyDark} castShadow>
-        <boxGeometry args={[1.88, 0.36, 0.1]} />
-      </mesh>
-
-      {/* Taillight bar — full-width */}
-      <mesh position={[0, 0.75, -2.61]} material={mat.taillight}>
-        <boxGeometry args={[1.72, 0.028, 0.04]} />
-      </mesh>
-
-      {/* Taillight clusters */}
-      <mesh position={[0.7, 0.6, -2.62]} material={mat.taillight}>
-        <boxGeometry args={[0.4, 0.22, 0.04]} />
-      </mesh>
-      <mesh position={[-0.7, 0.6, -2.62]} material={mat.taillight}>
-        <boxGeometry args={[0.4, 0.22, 0.04]} />
-      </mesh>
-
-      {/* Compute unit housing — rear lower cavity */}
-      <mesh position={[0, 0.85, -2.4]} material={mat.sensorDark} castShadow>
-        <boxGeometry args={[1.1, 0.35, 0.55]} />
-      </mesh>
-      {/* Compute vent grid lines */}
-      {[-0.3, 0, 0.3].map((x, i) => (
-        <mesh key={i} position={[x, 0.85, -2.16]} material={mat.accentSubtle}>
-          <boxGeometry args={[0.04, 0.25, 0.02]} />
-        </mesh>
-      ))}
-
-      {/* ── ULTRASONIC SENSOR BUMPS ── */}
-      {/* Front */}
-      {[-0.85, -0.35, 0.35, 0.85].map((x, i) => (
-        <mesh key={`uf-${i}`} position={[x, 0.22, 2.63]} material={mat.sensorDark}>
-          <cylinderGeometry args={[0.04, 0.04, 0.04, 10]} />
-        </mesh>
-      ))}
-      {/* Rear */}
-      {[-0.85, -0.35, 0.35, 0.85].map((x, i) => (
-        <mesh key={`ur-${i}`} position={[x, 0.22, -2.63]} material={mat.sensorDark}>
-          <cylinderGeometry args={[0.04, 0.04, 0.04, 10]} />
-        </mesh>
-      ))}
-
-      {/* ── DOOR LINES / PANEL GAPS (decorative) ── */}
-      {/* Thin recessed horizontal body line */}
-      <mesh position={[0.97, 0.68, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.accentSubtle}>
-        <planeGeometry args={[4.8, 0.008]} />
-      </mesh>
-      <mesh position={[-0.97, 0.68, 0]} rotation={[0, -Math.PI / 2, 0]} material={mat.accentSubtle}>
-        <planeGeometry args={[4.8, 0.008]} />
-      </mesh>
-
-      {/* ── WHEELS ── */}
-      <RobotaxiWheel position={[1.04, -0.12, 1.55]} side={1} mat={mat} />
-      <RobotaxiWheel position={[-1.04, -0.12, 1.55]} side={-1} mat={mat} />
-      <RobotaxiWheel position={[1.04, -0.12, -1.55]} side={1} mat={mat} />
-      <RobotaxiWheel position={[-1.04, -0.12, -1.55]} side={-1} mat={mat} />
-
-      {/* ── UNDERFLOOR BATTERY PACK ── flat slab between axles */}
-      <mesh position={[0, -0.28, 0]} material={mat.underfloor} castShadow>
-        <boxGeometry args={[1.78, 0.12, 2.8]} />
-      </mesh>
-
-      {/* Ground reflection glow */}
-      <mesh position={[0, -0.44, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[3.2, 6.0]} />
-        <meshBasicMaterial
-          color="#001a33"
-          transparent
-          opacity={0.35}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
     </group>
   );
 }
 
-function RobotaxiWheel({
+/** Covered turbine-style aero wheel — futuristic, premium, easy to read */
+function AeroWheel({
   position,
   side,
   mat,
@@ -329,50 +354,41 @@ function RobotaxiWheel({
   side: 1 | -1;
   mat: Record<string, THREE.Material>;
 }) {
-  const wheelRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (wheelRef.current) {
-      wheelRef.current.rotation.x = -state.clock.elapsedTime * 0.4;
-    }
-  });
+  const slots = useMemo(() => {
+    return Array.from({ length: 8 }).map((_, i) => (i / 8) * Math.PI * 2);
+  }, []);
 
   return (
     <group position={position}>
       {/* Tire */}
       <mesh rotation={[0, 0, Math.PI / 2]} material={mat.tire} castShadow>
-        <cylinderGeometry args={[0.36, 0.36, 0.26, 40]} />
+        <cylinderGeometry args={[0.34, 0.34, 0.24, 48]} />
       </mesh>
-      {/* Main rim */}
-      <group rotation={[0, 0, Math.PI / 2]} ref={wheelRef}>
-        <mesh material={mat.rim}>
-          <cylinderGeometry args={[0.26, 0.26, 0.28, 36]} />
+      {/* Rounded sidewall */}
+      <mesh position={[side * 0.1, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.tire}>
+        <torusGeometry args={[0.3, 0.045, 12, 48]} />
+      </mesh>
+      {/* Solid aero disc */}
+      <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rim}>
+        <cylinderGeometry args={[0.245, 0.245, 0.25, 48]} />
+      </mesh>
+      {/* Turbine slots — radial recesses on outer face */}
+      {slots.map((a, i) => (
+        <mesh
+          key={i}
+          position={[side * 0.127, Math.cos(a) * 0.14, Math.sin(a) * 0.14]}
+          rotation={[a, 0, 0]}
+          material={mat.rimSlot}
+        >
+          <boxGeometry args={[0.008, 0.13, 0.035]} />
         </mesh>
-        {/* 5-spoke design */}
-        {Array.from({ length: 5 }).map((_, i) => {
-          const angle = (i / 5) * Math.PI * 2;
-          return (
-            <mesh
-              key={i}
-              position={[
-                Math.cos(angle) * 0.13,
-                0,
-                Math.sin(angle) * 0.13,
-              ]}
-              material={mat.rim}
-            >
-              <boxGeometry args={[0.055, 0.285, 0.16]} />
-            </mesh>
-          );
-        })}
-        {/* Center hub */}
-        <mesh material={mat.rimAccent}>
-          <cylinderGeometry args={[0.055, 0.055, 0.3, 16]} />
-        </mesh>
-      </group>
-      {/* Rim accent ring (outer) */}
-      <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rimAccent}>
-        <torusGeometry args={[0.25, 0.008, 10, 40]} />
+      ))}
+      {/* Center hub + emissive ring */}
+      <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rim}>
+        <cylinderGeometry args={[0.07, 0.07, 0.27, 24]} />
+      </mesh>
+      <mesh position={[side * 0.136, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.hubGlow}>
+        <torusGeometry args={[0.075, 0.007, 8, 32]} />
       </mesh>
     </group>
   );

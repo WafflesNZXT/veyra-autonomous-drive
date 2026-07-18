@@ -14,7 +14,11 @@ import { scrollState } from '../hooks/useScrollProgress';
 // Pre-allocate to avoid garbage collection in render loop
 const _camA = new THREE.Vector3();
 const _camB = new THREE.Vector3();
-const _lookAt = new THREE.Vector3(0, 0.8, 0);
+const _lookAt = new THREE.Vector3(0, 0.15, 0);
+const _ease = gsap.parseEase('power2.inOut');
+
+// Car rests on stage at ground level; scene floor sits below
+const GROUND_Y = -0.6;
 
 export function CarScene({ activeChapter }: { activeChapter: number }) {
   const carGroup = useRef<THREE.Group>(null);
@@ -23,7 +27,7 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
   useLayoutEffect(() => {
     const c = CHAPTERS[0];
     camera.position.set(c.cameraPos[0], c.cameraPos[1], c.cameraPos[2]);
-    (camera as THREE.PerspectiveCamera).fov = 52;
+    (camera as THREE.PerspectiveCamera).fov = 50;
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
     camera.lookAt(_lookAt);
   }, [camera]);
@@ -36,18 +40,17 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
     const nextIdx = currIdx + 1;
     const localT = raw - currIdx;
 
-    // Smooth ease
-    const t = gsap.parseEase('power2.inOut')(localT);
+    const t = _ease(localT);
 
     const curr = CHAPTERS[currIdx];
     const next = CHAPTERS[nextIdx];
 
-    // Rotate car
+    // Rotate car (turntable + subtle pitch)
     carGroup.current.rotation.x = THREE.MathUtils.lerp(curr.carRotation[0], next.carRotation[0], t);
     carGroup.current.rotation.y = THREE.MathUtils.lerp(curr.carRotation[1], next.carRotation[1], t);
     carGroup.current.rotation.z = THREE.MathUtils.lerp(curr.carRotation[2], next.carRotation[2], t);
 
-    // Move camera — use pre-allocated vectors
+    // Camera path — pre-allocated vectors
     _camA.set(curr.cameraPos[0], curr.cameraPos[1], curr.cameraPos[2]);
     _camB.set(next.cameraPos[0], next.cameraPos[1], next.cameraPos[2]);
     camera.position.lerpVectors(_camA, _camB, t);
@@ -61,22 +64,32 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
     <>
       <color attach="background" args={['#04060e']} />
 
-      <Environment preset="city" environmentIntensity={0.45} />
+      {/* Reflection source — city HDR gives glossy paint something to mirror */}
+      <Environment preset="city" environmentIntensity={0.55} />
 
-      {/* Lighting — cool automotive studio setup */}
-      <ambientLight intensity={0.18} color="#ffffff" />
-      <directionalLight position={[6, 10, 6]} intensity={2.0} color="#ffffff" castShadow
-        shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
-      <directionalLight position={[-6, 4, -4]} intensity={1.8} color="#0066cc" />
-      <spotLight position={[0, 12, 0]} intensity={2.5} angle={0.5} penumbra={0.8} color="#002244" />
-      {/* Accent rim light from below — gives the floating glow */}
-      <pointLight position={[0, -0.5, 0]} intensity={3} color="#001a4d" distance={5} />
-      {/* Cyan fill for sensor highlights */}
-      <pointLight position={[3, 2, 3]} intensity={1.5} color="#003344" distance={8} />
+      {/* ── STUDIO LIGHTING RIG ── */}
+      <ambientLight intensity={0.15} color="#ffffff" />
+      {/* Key light — high, warm-white */}
+      <directionalLight
+        position={[6, 8, 6]}
+        intensity={2.2}
+        color="#ffffff"
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+      {/* Cool rim light — carves the silhouette from behind */}
+      <directionalLight position={[-7, 3.5, -6]} intensity={2.8} color="#4d9fff" />
+      {/* Cyan kicker — top-rear halo on roofline */}
+      <spotLight position={[0, 7, -8]} intensity={2.2} angle={0.65} penumbra={0.9} color="#00d4ff" />
+      {/* Underglow */}
+      <pointLight position={[0, GROUND_Y + 0.3, 0]} intensity={2.5} color="#0033aa" distance={5} />
+      {/* Side fill */}
+      <pointLight position={[4, 1, 4]} intensity={0.9} color="#1a4d66" distance={9} />
 
       {/* Floor glow plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.6, 0]}>
-        <planeGeometry args={[24, 24]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, GROUND_Y - 0.08, 0]}>
+        <planeGeometry args={[26, 26]} />
         <meshBasicMaterial
           color="#000d1a"
           transparent
@@ -87,21 +100,22 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
       </mesh>
 
       {/* Grid floor */}
-      <gridHelper args={[30, 30, '#001133', '#000a1a']} position={[0, -0.6, 0]} />
+      <gridHelper args={[32, 32, '#001133', '#000a1a']} position={[0, GROUND_Y - 0.07, 0]} />
 
       <ParticleField />
 
       <ContactShadows
-        position={[0, -0.58, 0]}
+        position={[0, GROUND_Y + 0.005, 0]}
         resolution={512}
-        scale={12}
-        blur={3}
-        opacity={0.9}
-        far={2.5}
+        scale={13}
+        blur={2.6}
+        opacity={0.85}
+        far={2.2}
         color="#000000"
       />
 
-      <group ref={carGroup}>
+      {/* Car + stage + annotations all rotate together (turntable) */}
+      <group ref={carGroup} position={[0, GROUND_Y, 0]}>
         <Suspense fallback={null}>
           <CarModel />
         </Suspense>
@@ -117,10 +131,10 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
 
       <EffectComposer multisampling={0}>
         <Bloom
-          luminanceThreshold={0.25}
+          luminanceThreshold={0.28}
           luminanceSmoothing={0.9}
           mipmapBlur
-          intensity={1.4}
+          intensity={1.35}
         />
         <Vignette eskil={false} offset={0.12} darkness={1.0} />
       </EffectComposer>
