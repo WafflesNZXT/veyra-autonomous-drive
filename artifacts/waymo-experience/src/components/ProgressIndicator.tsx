@@ -12,7 +12,7 @@ export function ProgressIndicator({ progress, currentChapter }: ProgressIndicato
     <>
       {/* Chapter counter — top right */}
       <div
-        className="fixed top-6 right-6 z-50 flex items-center gap-2"
+        className="fixed top-20 right-6 z-50 flex items-center gap-2"
         data-testid="chapter-counter"
       >
         <span

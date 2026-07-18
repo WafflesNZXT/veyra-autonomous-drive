@@ -267,3 +267,35 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Multi-page site animations ── */
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.page-fade-in {
+  animation: page-fade-in 0.5s ease both;
+}
+
+@keyframes section-reveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-reveal {
+  animation: section-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes scan-sweep {
+  0% { left: -2%; }
+  100% { left: 102%; }
+}
+.scan-sweep {
+  animation: scan-sweep 5s linear infinite;
+}
+
+@keyframes route-dash {
+  to { stroke-dashoffset: -140; }
+}
+.route-dash {
+  animation: route-dash 6s linear infinite;
+}

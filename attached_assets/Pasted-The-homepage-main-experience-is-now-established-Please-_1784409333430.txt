@@ -1,0 +1,222 @@
+The homepage / main experience is now established. Please expand the website into a polished multi-section / multi-page autonomous vehicle concept site for VEYRA.
+
+The site should feel like a premium futuristic product showcase. Keep the existing dark cinematic design language and make the whole website feel unified.
+
+## Brand
+Brand name: VEYRA
+Vehicle: VEYRA One
+Tagline: Intelligence in Motion.
+
+## Site structure
+Please create the following primary pages / sections:
+
+1) Experience
+2) Vehicle
+3) Intelligence
+4) Safety
+5) Network
+6) Vision
+
+You can implement these either as separate routed pages or as clearly separated sections with strong navigation, depending on what fits best. The important part is that the site feels complete and polished.
+
+---
+
+## 1) Experience
+This is the current main cinematic scroll-driven homepage.
+
+Purpose:
+- serve as the “wow” page
+- introduce VEYRA One
+- showcase the autonomous systems through scroll-based storytelling
+
+Keep / refine:
+- 3D car reveal
+- chapter-based scroll storytelling
+- glowing annotations for LiDAR, radar, cameras, ultrasonic sensors, compute
+- premium hero section
+- strong opening and closing moments
+
+Navigation label:
+Experience
+
+---
+
+## 2) Vehicle
+Create a dedicated product-style page for VEYRA One.
+
+Purpose:
+- focus on the car itself
+- present it like a premium concept vehicle
+
+Include:
+- clean hero section for VEYRA One
+- interactive 3D viewer or controlled display of the car
+- front / side / rear / top views if possible
+- brief design philosophy copy
+- feature highlights
+- sensor placement overview
+- concept specifications section
+
+Possible content:
+- sleek exterior design
+- panoramic visibility
+- autonomous sensor integration
+- aerodynamic silhouette
+- intelligent lighting language
+- premium concept interior direction (optional placeholder if needed)
+
+Navigation label:
+Vehicle
+
+---
+
+## 3) Intelligence
+Create a page focused on how the autonomous system works.
+
+Purpose:
+- explain the perception and decision-making technology
+- make the project feel deeper and smarter beyond visuals
+
+Use sub-branding if helpful:
+VEYRA Sense
+VEYRA Core
+
+Include:
+- LiDAR overview
+- camera system overview
+- radar overview
+- ultrasonic system overview
+- sensor fusion explanation
+- onboard AI compute explanation
+- prediction / path planning visuals
+- perception-to-decision pipeline
+
+Visual ideas:
+- point cloud effects
+- detection overlays
+- motion path graphics
+- animated diagrams
+- clean technical cards
+
+Navigation label:
+Intelligence
+
+---
+
+## 4) Safety
+Create a page focused on trust, redundancy, and system design principles.
+
+Purpose:
+- make the concept feel responsible and credible
+- reinforce confidence in autonomous operation
+
+Use sub-branding if helpful:
+VEYRA Shield
+
+Include:
+- multi-sensor redundancy
+- low-visibility operation principles
+- obstacle detection and emergency response
+- safe-stop behavior
+- system health monitoring
+- passenger safety principles
+- accessibility and passenger reassurance
+
+Important:
+Present these as concept design principles / capabilities, not real-world certified claims.
+
+Navigation label:
+Safety
+
+---
+
+## 5) Network
+Create a page showing the broader VEYRA ecosystem and future of mobility.
+
+Purpose:
+- show that VEYRA is more than one car
+- position it as a fleet / urban mobility concept
+
+Use sub-branding if helpful:
+VEYRA Network
+
+Include:
+- connected fleet concept
+- intelligent routing
+- pickup / drop-off flow
+- charging hub ecosystem
+- city integration
+- accessible ride options
+- reduced congestion / optimized mobility messaging
+
+Visual ideas:
+- animated city map
+- route lines
+- vehicle network diagrams
+- urban mobility dashboard feel
+
+Navigation label:
+Network
+
+---
+
+## 6) Vision
+Create a final page that wraps up the concept.
+
+Purpose:
+- communicate the mission and future-facing message
+- give the project a strong ending
+
+Include:
+- VEYRA mission statement
+- brief narrative about the future of autonomous transportation
+- why this concept exists
+- creator / team / hackathon credits
+- stack / tools used
+- final CTA like:
+  - Re-enter Experience
+  - Explore VEYRA One
+  - See the Future Move
+
+Navigation label:
+Vision
+
+---
+
+## Navigation / UX requirements
+Please add a polished top navigation with:
+- VEYRA logo/wordmark
+- Experience
+- Vehicle
+- Intelligence
+- Safety
+- Network
+- Vision
+
+Also include:
+- responsive navigation for mobile
+- smooth transitions between sections/pages
+- subtle hover states
+- consistent typography and spacing
+- strong visual hierarchy
+
+## Design requirements
+Maintain a consistent visual language across the whole site:
+- dark futuristic theme
+- cyan / white accent system
+- premium, minimal UI
+- cinematic presentation
+- subtle glow
+- controlled reflections
+- clean technical graphics
+- polished transitions
+
+## Priority
+Focus on:
+1. clean structure
+2. premium branding
+3. strong page hierarchy
+4. high-end UI/UX polish
+5. consistency with the current car experience
+
+Do not overcomplicate backend work. This should remain a front-end-first autonomous vehicle concept showcase.

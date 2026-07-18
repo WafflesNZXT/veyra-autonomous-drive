@@ -14,6 +14,14 @@ export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Always re-enter the experience from the top (SPA navigation preserves scroll)
+    window.scrollTo(0, 0);
+    scrollState.progress = 0;
+    scrollState.chapterIndex = 0;
+    setProgress(0);
+    setCurrentChapter(0);
+    ScrollTrigger.refresh();
+
     const trigger = ScrollTrigger.create({
       trigger: "#scroll-container",
       start: "top top",

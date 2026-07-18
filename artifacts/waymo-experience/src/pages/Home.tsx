@@ -6,7 +6,7 @@ import { ChapterPanel } from '@/components/ChapterPanel';
 import { ProgressIndicator } from '@/components/ProgressIndicator';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { VeyraMark, VeyraWordmark } from '@/components/VeyraLogo';
+import { SiteNav } from '@/components/SiteNav';
 
 export default function Home() {
   const { currentChapter, progress } = useScrollProgress();
@@ -45,6 +45,16 @@ export default function Home() {
         <LoadingScreen progress={loadProgress} onComplete={handleComplete} />
       )}
 
+      {/* Site navigation */}
+      <div
+        style={{
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.7s ease 0.2s',
+        }}
+      >
+        <SiteNav />
+      </div>
+
       {/* Fixed 3D canvas */}
       <div className="fixed inset-0 w-full h-[100dvh] z-10" style={{ pointerEvents: 'none' }}>
         <Canvas
@@ -67,21 +77,6 @@ export default function Home() {
           transition: 'opacity 0.7s ease 0.2s',
         }}
       >
-        {/* Brand lockup + status */}
-        <div className="absolute top-6 left-6 flex items-center gap-3" data-testid="status-badge">
-          <VeyraMark size={22} />
-          <VeyraWordmark className="text-sm" />
-          <div className="hidden md:flex items-center gap-2 ml-3 pl-3 border-l border-white/10">
-            <div
-              className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"
-              style={{ boxShadow: '0 0 6px rgba(0,212,255,0.9)' }}
-            />
-            <span className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase">
-              SYSTEMS ONLINE
-            </span>
-          </div>
-        </div>
-
         <ProgressIndicator progress={progress} currentChapter={currentChapter + 1} />
         <ChapterPanel chapterIndex={currentChapter} scrollProgress={progress} />
       </div>
