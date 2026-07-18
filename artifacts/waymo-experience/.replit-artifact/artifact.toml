@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Autonomous Vehicle Experience"
+version = "1.0.0"
+id = "artifacts/waymo-experience"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21955
+
+[services.development]
+run = "pnpm --filter @workspace/waymo-experience run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/waymo-experience", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/waymo-experience/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21955"
+BASE_PATH = "/"
