@@ -268,6 +268,43 @@
   background-clip: text;
 }
 
+/* Reserve the right-side radar callout lane while keeping its editorial copy right aligned. */
+.radar-panel-content {
+  max-width: clamp(15rem, 27vw, 22rem);
+  margin-right: clamp(5rem, 11vw, 12rem);
+}
+
+.radar-panel-title {
+  font-size: clamp(1.65rem, 3.4vw, 2.7rem);
+}
+
+@media (max-width: 767px) {
+  .radar-panel-frame {
+    align-self: flex-start;
+    justify-content: flex-start;
+    padding: 6.5rem 1.5rem 0;
+  }
+
+  .radar-panel-content {
+    max-width: min(19rem, calc(100vw - 3rem));
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .radar-panel-eyebrow,
+  .radar-panel-stat {
+    flex-direction: row;
+  }
+
+  .radar-panel-stats {
+    border-right: none !important;
+    border-left-style: solid !important;
+    border-left-width: 2px !important;
+    padding-left: 1rem !important;
+    padding-right: 0 !important;
+  }
+}
+
 /* ── Multi-page site animations ── */
 @keyframes page-fade-in {
   from { opacity: 0; }

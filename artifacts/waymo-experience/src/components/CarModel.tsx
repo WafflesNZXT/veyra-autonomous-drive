@@ -415,10 +415,10 @@ export function CarModel() {
         {/* ── VEYRA BRANDING ── */}
         {/* Front fascia V badge — two converging blades above the light bar */}
         <group position={[0, 0.615, 2.46]} rotation={[-0.18, 0, 0]}>
-          <mesh position={[-0.033, 0, 0]} rotation={[0, 0, -0.55]} material={mat.lightBar}>
+          <mesh position={[-0.033, 0, 0]} rotation={[0, 0, 0.55]} material={mat.lightBar}>
             <boxGeometry args={[0.016, 0.105, 0.012]} />
           </mesh>
-          <mesh position={[0.033, 0, 0]} rotation={[0, 0, 0.55]} material={mat.lightBar}>
+          <mesh position={[0.033, 0, 0]} rotation={[0, 0, -0.55]} material={mat.lightBar}>
             <boxGeometry args={[0.016, 0.105, 0.012]} />
           </mesh>
         </group>
