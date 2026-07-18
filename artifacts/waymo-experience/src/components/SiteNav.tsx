@@ -39,7 +39,7 @@ export function SiteNav() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             {NAV_ITEMS.map((item) => {
               const active = location === item.path;
               return (
@@ -66,7 +66,7 @@ export function SiteNav() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden flex flex-col justify-center items-end gap-1.5 w-8 h-8 pointer-events-auto"
+            className="lg:hidden flex flex-col justify-center items-end gap-1.5 w-8 h-8 pointer-events-auto"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
             data-testid="nav-hamburger"
@@ -85,7 +85,7 @@ export function SiteNav() {
 
       {/* Mobile menu overlay */}
       <div
-        className="fixed inset-0 z-[99] md:hidden flex flex-col items-center justify-center gap-7 transition-all duration-400 pointer-events-auto"
+        className="fixed inset-0 z-[99] lg:hidden flex flex-col items-center justify-center gap-7 transition-all duration-400 pointer-events-auto"
         style={{
           background: 'rgba(4,6,14,0.97)',
           opacity: open ? 1 : 0,

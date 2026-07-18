@@ -33,11 +33,11 @@ const ECOSYSTEM = [
   },
 ];
 
-const METRICS: [string, string][] = [
-  ['Cities (concept)', '50+'],
-  ['Fleet utilization target', '3× private car'],
-  ['Curb time per pickup', '< 45 s'],
-  ['Parking demand reduction', 'Up to 30%'],
+const METRICS: { value: string; label: string; desc?: string }[] = [
+  { value: '50+', label: 'Cities', desc: 'Concept coverage' },
+  { value: '3×', label: 'Vehicle Utilization', desc: 'vs. a private car' },
+  { value: '<45s', label: 'Curb Time', desc: 'Per pickup' },
+  { value: '30%', label: 'Parking Reduction', desc: 'Up to, per district' },
 ];
 
 /** Stylized animated city-network diagram (pure SVG). */
@@ -115,11 +115,23 @@ export default function Network() {
 
       {/* Impact metrics */}
       <Section eyebrow="Urban Impact" title="What a fleet gives back" center>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          {METRICS.map(([k, v]) => (
-            <div key={k} className="text-center">
-              <p className="font-sans font-bold text-2xl md:text-3xl text-cyan-400 mb-2">{v}</p>
-              <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/35">{k}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 max-w-4xl mx-auto">
+          {METRICS.map((m) => (
+            <div key={m.label} className="text-center flex flex-col items-center">
+              <p
+                className="font-sans font-bold text-cyan-400 mb-3 whitespace-nowrap leading-none"
+                style={{ fontSize: 'clamp(2rem,3.5vw,2.75rem)' }}
+              >
+                {m.value}
+              </p>
+              <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60 leading-relaxed">
+                {m.label}
+              </p>
+              {m.desc && (
+                <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-white/30 mt-1 leading-relaxed">
+                  {m.desc}
+                </p>
+              )}
             </div>
           ))}
         </div>

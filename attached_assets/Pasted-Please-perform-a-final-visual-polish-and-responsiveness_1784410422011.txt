@@ -1,0 +1,306 @@
+Please perform a final visual-polish and responsiveness pass on the VEYRA website.
+
+The current design, vehicle, colors, branding, animations, and overall visual direction are strong. Do not redesign the project or replace the existing car. Focus only on the specific improvements below.
+
+BRAND
+VEYRA
+Vehicle: VEYRA One
+Tagline: Intelligence in Motion.
+
+==================================================
+1. SIMPLIFY THE INITIAL LANDING VIEW
+==================================================
+
+The initial landing viewport currently shows the vehicle and stage immediately behind the hero copy, which makes the text less readable.
+
+Change the opening sequence so that the initial viewport contains:
+
+- the dark stars-and-space background
+- the VEYRA navigation
+- the VEYRA logo
+- the “VEYRA ONE” heading
+- the “Intelligence in Motion.” tagline
+- the short introductory description
+- the scroll indicator
+
+Do not show the car, platform/stage, sensor annotations, or vehicle lighting in the initial resting viewport.
+
+The opening should feel spacious, cinematic, premium, and easy to read.
+
+As the user begins scrolling:
+
+- smoothly introduce the vehicle and circular stage into the scene
+- have the car and stage rise, fade, or glide into frame
+- use a controlled cinematic transition rather than suddenly appearing
+- begin introducing the vehicle before the first sensor chapter
+- preserve the current scroll-based vehicle sequence after the entrance
+
+Keep the 3D model loaded in the background so that it does not pop in or cause a loading delay. Animate its visibility, opacity, position, and/or scale instead of remounting the entire scene.
+
+Make sure the hero text remains clearly readable and does not overlap the car during the entrance transition.
+
+==================================================
+2. FIX THE EXPERIENCE NUMBERING
+==================================================
+
+The final chapter currently displays:
+
+07 / 06
+
+That is incorrect.
+
+Because the experience includes the intro plus six chapters, there are seven total states.
+
+Use this numbering consistently:
+
+- Intro: 01 / 07
+- LiDAR: 02 / 07
+- Radar: 03 / 07
+- Cameras: 04 / 07
+- Ultrasonic: 05 / 07
+- AI Compute: 06 / 07
+- Finale: 07 / 07
+
+Keep the same two-digit visual style, but ensure the current number and total number are always correct.
+
+==================================================
+3. CLEAN UP THE FINALE
+==================================================
+
+The finale currently feels visually cramped because the sensor labels, connector lines, hotspots, text cards, large title, and car are all competing for space.
+
+For the finale:
+
+- disable all individual sensor labels
+- disable all component callout boxes
+- disable connector lines
+- disable radar, camera, and LiDAR identification tags
+- remove the component-pointing circles and markers
+- show the VEYRA One as a clean, uninterrupted background vehicle
+- keep subtle vehicle lighting and the cinematic environment
+
+The finale should focus on the full car and the main message:
+
+ALL SYSTEMS ACTIVE
+
+INTELLIGENCE
+IN MOTION.
+
+Keep the four VEYRA system summaries, but format them as a clean responsive information grid that does not cover important parts of the car.
+
+Suggested cards:
+
+- VEYRA Sense — Full perception integration
+- VEYRA Core — Level 4 autonomous compute
+- VEYRA Shield — Zero-compromise safety concept
+- VEYRA Network — Connected urban mobility
+
+Improve the finale layout so that:
+
+- the main heading never clips against the left side
+- the text has sufficient space around it
+- the cards do not overlap one another
+- the cards do not obscure the front of the car
+- the VEYRA logo and footer text remain readable
+- the layout adapts cleanly across desktop, tablet, and mobile
+
+Use responsive max-widths, CSS clamp() typography, and a grid that becomes two columns and then one column on smaller screens.
+
+==================================================
+4. IMPROVE THE NETWORK STATISTICS SECTION
+==================================================
+
+Improve the formatting of the “What a fleet gives back” section.
+
+The current “3× private car” statistic wraps awkwardly and looks inconsistent with the other statistics.
+
+Change that statistic to:
+
+VALUE:
+3×
+
+PRIMARY LABEL:
+VEHICLE UTILIZATION
+
+SECONDARY DESCRIPTION:
+VS. A PRIVATE CAR
+
+Do not place “3× private car” together as one wrapping value.
+
+Use a consistent structure for every statistic:
+
+- large cyan value
+- concise uppercase label
+- optional smaller supporting description
+
+The four statistics should use equal-width columns and consistent vertical alignment.
+
+Desktop:
+- four columns in one row
+
+Tablet:
+- two columns by two rows
+
+Mobile:
+- one column per row or a clean two-column layout where space allows
+
+Ensure:
+
+- numerical values never break onto multiple lines
+- spacing is balanced
+- labels have consistent line heights
+- nothing feels crowded
+- there is no horizontal overflow
+- the section remains centered inside a reasonable max-width container
+
+Keep the concept disclaimer beneath the statistics.
+
+==================================================
+5. REPLACE THE GENERIC CREDITS WITH A CREATOR SECTION
+==================================================
+
+Replace the current generic credits layout with a polished creator profile section.
+
+Use the portrait image attached with this request.
+
+Store it in the project as something similar to:
+
+/public/assets/wafi-syed.jpg
+
+Display the portrait as:
+
+- a perfect circle
+- object-fit: cover
+- properly centered
+- approximately 150–180px on desktop
+- smaller on mobile
+- optional subtle cyan border
+- optional restrained cyan glow or shadow
+- no stretching or distortion
+
+Use this content:
+
+SECTION LABEL:
+CREATOR
+
+HEADING:
+Designed and built by Wafi Syed
+
+ROLE:
+Creator & Developer
+
+DESCRIPTION:
+VEYRA is an original autonomous mobility concept designed and developed for the 3D Websites Hackathon. The vehicle, interface, branding, and interactive experience were created specifically for this project.
+
+Add two polished external-link buttons:
+
+LINKEDIN
+https://www.linkedin.com/in/wafisyed/
+
+GITHUB
+https://github.com/WafflesNZXT
+
+Requirements for the links:
+
+- use recognizable LinkedIn and GitHub icons
+- open in a new tab
+- include rel="noopener noreferrer"
+- include clear hover and focus states
+- remain accessible with text labels, not icon-only buttons
+
+Retain the technology stack, but reposition it beneath or beside the creator information:
+
+- React + TypeScript
+- Three.js / React Three Fiber
+- GSAP scroll choreography
+- Procedural 3D modeling
+- Tailwind CSS
+- Vite
+
+You may retain a smaller line saying:
+
+Built for the 3D Websites Hackathon
+
+However, the creator profile should now be the main focus of the credits section.
+
+Desktop layout:
+- portrait on one side
+- creator information on the other side
+- stack underneath or in a secondary column
+
+Mobile layout:
+- centered portrait
+- centered name and role
+- readable description
+- stacked or full-width social buttons
+- technology chips wrapping cleanly
+
+Use the image alt text:
+
+“Portrait of Wafi Syed”
+
+==================================================
+6. GLOBAL RESPONSIVENESS AND FORMATTING PASS
+==================================================
+
+Review every page at approximately:
+
+- 1440px desktop
+- 1024px laptop
+- 768px tablet
+- 390px mobile
+
+Fix any remaining cases of:
+
+- clipped headings
+- text extending beyond the viewport
+- overlapping content
+- navigation overflow
+- excessively small text
+- cards covering the vehicle
+- horizontal scrolling
+- awkward line breaks
+- inconsistent section padding
+- 3D content being cropped incorrectly
+
+Navigation requirements:
+
+- keep the full navigation on larger screens
+- switch to a polished mobile menu when the links no longer fit
+- preserve the VEYRA logo
+- clearly indicate the active page
+- ensure keyboard accessibility
+
+Typography requirements:
+
+- use clamp() where appropriate
+- preserve the bold editorial design
+- avoid enormous headings extending outside their intended containers
+- maintain readable paragraph widths
+- retain the current cinematic uppercase and monospaced accents
+
+3D requirements:
+
+- preserve the current vehicle model
+- preserve smooth scrolling
+- preserve shadows and subtle reflections
+- do not restore the earlier excessive bloom
+- do not introduce large glowing artifacts
+- prevent unnecessary scene remounting between interactions
+
+==================================================
+FINAL RESULT
+==================================================
+
+The finished website should have:
+
+- a clean text-first opening over the star field
+- a cinematic vehicle entrance after scrolling begins
+- correct 01 / 07 through 07 / 07 numbering
+- an uncluttered finale with a plain vehicle background
+- better-formatted network statistics
+- a personalized creator section featuring Wafi Syed
+- working LinkedIn and GitHub buttons
+- polished responsiveness across desktop, tablet, and mobile
+
+Preserve everything that already works well. Make these targeted final changes without rebuilding the entire experience.

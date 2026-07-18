@@ -68,16 +68,16 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
           data-testid="finale-content"
           style={{ background: 'radial-gradient(ellipse at center, rgba(0,20,50,0.5) 0%, transparent 70%)' }}
         >
-          <div className="finale-reveal">
+          <div className="finale-reveal w-full max-w-4xl mx-auto px-2">
             <p
-              className="font-mono text-xs tracking-[0.35em] mb-8 uppercase"
-              style={{ color: chapter.accentColor }}
+              className="font-mono tracking-[0.35em] mb-6 md:mb-8 uppercase"
+              style={{ color: chapter.accentColor, fontSize: 'clamp(0.65rem,1.4vw,0.75rem)' }}
             >
               ALL SYSTEMS ACTIVE
             </p>
             <h2
-              className="font-sans font-bold tracking-tighter text-white leading-none mb-10"
-              style={{ fontSize: 'clamp(2.5rem,7vw,6rem)' }}
+              className="font-sans font-bold tracking-tight text-white leading-[1.02] mb-6 md:mb-8"
+              style={{ fontSize: 'clamp(2.1rem,6.5vw,5.5rem)' }}
             >
               {chapter.title.split('\n').map((line, i) => (
                 <span
@@ -89,32 +89,43 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
                 </span>
               ))}
             </h2>
-            <p className="font-mono text-sm tracking-[0.2em] uppercase mb-12 opacity-50 text-white">
+            <p
+              className="font-mono tracking-[0.2em] uppercase mb-8 md:mb-12 opacity-50 text-white"
+              style={{ fontSize: 'clamp(0.65rem,1.6vw,0.875rem)' }}
+            >
               {chapter.subtitle}
             </p>
-            {/* Stats grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg mx-auto">
-              {chapter.stats.map((stat, i) => (
-                <div
-                  key={i}
-                  className="stat-chip finale-stat-reveal"
-                  style={{
-                    animationDelay: `${i * 0.1 + 0.8}s`,
-                    borderColor: `${chapter.accentColor}44`,
-                  }}
-                >
-                  <span
-                    className="w-1 h-1 rounded-full flex-shrink-0"
-                    style={{ background: chapter.accentColor }}
-                  />
-                  <span className="font-mono text-xs text-white/60 tracking-wide">{stat}</span>
-                </div>
-              ))}
+            {/* System summary grid — 2 cols → 1 col on small screens */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto w-full">
+              {chapter.stats.map((stat, i) => {
+                // Split on em/en/hyphen dash with surrounding spaces; fall back to whole string
+                const parts = stat.split(/\s+[—–-]\s+/);
+                const sys = parts[0];
+                const desc = parts.length > 1 ? parts.slice(1).join(' — ') : null;
+                return (
+                  <div
+                    key={i}
+                    className="finale-stat-reveal border bg-black/30 backdrop-blur-sm px-4 py-3 text-left"
+                    style={{
+                      animationDelay: `${i * 0.1 + 0.8}s`,
+                      borderColor: `${chapter.accentColor}33`,
+                    }}
+                  >
+                    <p
+                      className="font-mono text-[10px] tracking-[0.25em] uppercase mb-1"
+                      style={{ color: chapter.accentColor }}
+                    >
+                      {sys}
+                    </p>
+                    <p className="font-sans text-xs text-white/60 leading-snug">{desc}</p>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Brand footer / credits */}
             <div
-              className="mt-14 flex flex-col items-center gap-3 finale-stat-reveal"
+              className="mt-10 md:mt-14 flex flex-col items-center gap-3 finale-stat-reveal"
               style={{ animationDelay: '1.3s' }}
               data-testid="finale-footer"
             >

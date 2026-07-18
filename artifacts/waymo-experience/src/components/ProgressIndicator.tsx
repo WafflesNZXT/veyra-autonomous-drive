@@ -21,7 +21,7 @@ export function ProgressIndicator({ progress, currentChapter }: ProgressIndicato
         >
           {currentChapter.toString().padStart(2, '0')}
         </span>
-        <span className="font-mono text-xs text-white/25 tracking-widest">/ 06</span>
+        <span className="font-mono text-xs text-white/25 tracking-widest">/ 07</span>
       </div>
 
       {/* Chapter dot nav — right side vertical */}

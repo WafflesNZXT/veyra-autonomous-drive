@@ -122,18 +122,13 @@ export const CHAPTERS: ChapterData[] = [
     title: "INTELLIGENCE\nIN MOTION.",
     subtitle: "VEYRA Network · Autonomous mobility, everywhere",
     stats: [
-      "VEYRA Sense — full perception integration",
+      "VEYRA Sense — Full perception integration",
       "VEYRA Core — Level 4 autonomous compute",
-      "VEYRA Shield — zero-compromise safety",
-      "VEYRA Network — 50+ cities worldwide",
+      "VEYRA Shield — Zero-compromise safety concept",
+      "VEYRA Network — Connected urban mobility",
     ],
-    annotations: [
-      { id: "f-lidar", position: [0, 1.74, -0.3], label: "LIDAR", shortLabel: "LIDAR" },
-      { id: "f-radar", position: [0, 0.45, 2.56], label: "RADAR", shortLabel: "RADAR" },
-      { id: "f-cam-l", position: [0.9, 0.8, 1.5], label: "CAMERA", shortLabel: "CAM" },
-      { id: "f-cam-r", position: [-0.9, 0.8, 1.5], label: "CAMERA", shortLabel: "CAM" },
-      { id: "f-compute", position: [0, 0.98, -1.9], label: "COMPUTE", shortLabel: "CPU" },
-    ],
+    // Finale shows the clean, uninterrupted vehicle — no callouts
+    annotations: [],
     cameraPos: [3.9, 1.6, 5.8],
     carRotation: [0, 0.2, 0],
     accentColor: "#00d4ff",

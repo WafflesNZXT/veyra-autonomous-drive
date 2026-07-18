@@ -20,8 +20,13 @@ const _ease = gsap.parseEase('power2.inOut');
 // Car rests on stage at ground level; scene floor sits below
 const GROUND_Y = -0.6;
 
+// Scroll fraction over which the car + stage rise into frame (chapter 1 starts at ~0.167)
+const ENTRANCE_END = 0.1;
+const ENTRANCE_DROP = 5.5;
+
 export function CarScene({ activeChapter }: { activeChapter: number }) {
   const carGroup = useRef<THREE.Group>(null);
+  const stageGroup = useRef<THREE.Group>(null);
   const { camera } = useThree();
 
   useLayoutEffect(() => {
@@ -34,6 +39,14 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
 
   useFrame(() => {
     if (!carGroup.current) return;
+
+    // Cinematic entrance — car + stage rest below frame at the hero,
+    // then rise smoothly into view as scrolling begins.
+    if (stageGroup.current) {
+      const heroT = THREE.MathUtils.clamp(scrollState.progress / ENTRANCE_END, 0, 1);
+      const eIn = _ease(heroT);
+      stageGroup.current.position.y = -(1 - eIn) * ENTRANCE_DROP;
+    }
 
     const raw = scrollState.progress * (CHAPTERS.length - 1.001);
     const currIdx = Math.min(CHAPTERS.length - 2, Math.floor(raw));
@@ -82,51 +95,55 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
       <directionalLight position={[-7, 3.5, -6]} intensity={1.8} color="#4d9fff" />
       {/* Cyan kicker — top-rear halo on roofline */}
       <spotLight position={[0, 7, -8]} intensity={1.1} angle={0.65} penumbra={0.9} color="#00d4ff" />
-      {/* Underglow */}
-      <pointLight position={[0, GROUND_Y + 0.3, 0]} intensity={0.9} color="#0033aa" distance={5} />
       {/* Side fill */}
       <pointLight position={[4, 1, 4]} intensity={0.6} color="#1a4d66" distance={9} />
 
-      {/* Floor glow plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, GROUND_Y - 0.08, 0]}>
-        <planeGeometry args={[26, 26]} />
-        <meshBasicMaterial
-          color="#000d1a"
-          transparent
-          opacity={0.35}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-
-      {/* Grid floor */}
-      <gridHelper args={[32, 32, '#001133', '#000a1a']} position={[0, GROUND_Y - 0.07, 0]} />
-
       <ParticleField />
 
-      <ContactShadows
-        position={[0, GROUND_Y + 0.005, 0]}
-        resolution={512}
-        scale={13}
-        blur={2.6}
-        opacity={0.85}
-        far={2.2}
-        color="#000000"
-      />
+      {/* ── STAGE — rises into frame after the hero ── */}
+      <group ref={stageGroup} position={[0, -ENTRANCE_DROP, 0]}>
+        {/* Underglow */}
+        <pointLight position={[0, GROUND_Y + 0.3, 0]} intensity={0.9} color="#0033aa" distance={5} />
 
-      {/* Car + stage + annotations all rotate together (turntable) */}
-      <group ref={carGroup} position={[0, GROUND_Y, 0]}>
-        <Suspense fallback={null}>
-          <CarModel />
-        </Suspense>
-        {chapter && chapter.annotations.length > 0 && (
-          <Annotations
-            key={`ann-${activeChapter}`}
-            annotations={chapter.annotations}
-            isFinale={isFinale}
-            accentColor={chapter.accentColor}
+        {/* Floor glow plane */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, GROUND_Y - 0.08, 0]}>
+          <planeGeometry args={[26, 26]} />
+          <meshBasicMaterial
+            color="#000d1a"
+            transparent
+            opacity={0.35}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
           />
-        )}
+        </mesh>
+
+        {/* Grid floor */}
+        <gridHelper args={[32, 32, '#001133', '#000a1a']} position={[0, GROUND_Y - 0.07, 0]} />
+
+        <ContactShadows
+          position={[0, GROUND_Y + 0.005, 0]}
+          resolution={512}
+          scale={13}
+          blur={2.6}
+          opacity={0.85}
+          far={2.2}
+          color="#000000"
+        />
+
+        {/* Car + annotations rotate together (turntable) */}
+        <group ref={carGroup} position={[0, GROUND_Y, 0]}>
+          <Suspense fallback={null}>
+            <CarModel />
+          </Suspense>
+          {chapter && chapter.annotations.length > 0 && (
+            <Annotations
+              key={`ann-${activeChapter}`}
+              annotations={chapter.annotations}
+              isFinale={isFinale}
+              accentColor={chapter.accentColor}
+            />
+          )}
+        </group>
       </group>
 
       <EffectComposer multisampling={0}>
