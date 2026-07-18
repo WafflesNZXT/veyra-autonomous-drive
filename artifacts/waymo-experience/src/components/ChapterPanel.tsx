@@ -1,4 +1,5 @@
 import { CHAPTERS } from '../data/chapters';
+import { VeyraMark } from './VeyraLogo';
 
 interface ChapterPanelProps {
   chapterIndex: number;
@@ -21,22 +22,32 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
           className="w-full flex flex-col items-center justify-end pb-28 md:pb-0 md:justify-center text-center px-6"
           data-testid="hero-content"
         >
-          <h1 className="font-sans font-bold tracking-tighter text-white leading-none mb-6 text-[clamp(2.8rem,8vw,7rem)]">
+          <div className="hero-line-reveal mb-6" style={{ animationDelay: '0.1s' }}>
+            <VeyraMark size={44} />
+          </div>
+          <h1 className="font-sans font-semibold tracking-[0.18em] text-white leading-none mb-6 text-[clamp(2.6rem,7vw,6rem)]">
             {chapter.title.split('\n').map((line, i) => (
               <span
                 key={i}
                 className="block hero-line-reveal"
-                style={{ animationDelay: `${i * 0.15 + 0.2}s` }}
+                style={{ animationDelay: `${i * 0.15 + 0.25}s` }}
               >
                 {line}
               </span>
             ))}
           </h1>
           <p
-            className="font-mono text-sm md:text-base tracking-[0.25em] uppercase hero-line-reveal opacity-60"
+            className="font-mono text-sm md:text-base tracking-[0.3em] uppercase hero-line-reveal opacity-70 mb-5"
             style={{ animationDelay: '0.7s', color: chapter.accentColor }}
           >
             {chapter.subtitle}
+          </p>
+          <p
+            className="max-w-md font-sans text-sm md:text-base text-white/45 leading-relaxed hero-line-reveal"
+            style={{ animationDelay: '0.95s' }}
+          >
+            A premium autonomous vehicle concept designed to see, understand,
+            and move with the world around it.
           </p>
 
           {/* Scroll hint */}
@@ -99,6 +110,21 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
                   <span className="font-mono text-xs text-white/60 tracking-wide">{stat}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Brand footer / credits */}
+            <div
+              className="mt-14 flex flex-col items-center gap-3 finale-stat-reveal"
+              style={{ animationDelay: '1.3s' }}
+              data-testid="finale-footer"
+            >
+              <VeyraMark size={22} />
+              <p className="font-sans font-semibold tracking-[0.42em] text-white/70 text-sm">
+                VEYRA
+              </p>
+              <p className="font-mono text-[10px] tracking-[0.3em] text-white/30 uppercase">
+                Intelligence in Motion. © 2026 VEYRA Concept
+              </p>
             </div>
           </div>
         </div>

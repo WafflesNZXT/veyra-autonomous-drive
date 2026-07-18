@@ -73,6 +73,58 @@ function buildCanopyGeometry(): THREE.BufferGeometry {
   return merged;
 }
 
+/** Renders wide-tracked brand text to a transparent canvas texture. */
+function makeLabelTexture(text: string, fontSize = 96, spacing = 30): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  const font = `600 ${fontSize}px Inter, Helvetica, Arial, sans-serif`;
+  let ctx = canvas.getContext('2d')!;
+  ctx.font = font;
+  let width = 40;
+  for (const ch of text) width += ctx.measureText(ch).width + spacing;
+  canvas.width = Math.ceil(width);
+  canvas.height = Math.ceil(fontSize * 1.5);
+  ctx = canvas.getContext('2d')!; // resize resets state
+  ctx.font = font;
+  ctx.fillStyle = '#dff4fb';
+  ctx.textBaseline = 'middle';
+  let x = 20;
+  for (const ch of text) {
+    ctx.fillText(ch, x, canvas.height / 2);
+    x += ctx.measureText(ch).width + spacing;
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return tex;
+}
+
+/** Flat brand-label plane hovering just off the body side panel. */
+function BrandLabel({
+  text,
+  position,
+  side,
+  height,
+  opacity = 0.85,
+}: {
+  text: string;
+  position: [number, number, number];
+  side: 1 | -1;
+  height: number;
+  opacity?: number;
+}) {
+  const { texture, aspect } = useMemo(() => {
+    const t = makeLabelTexture(text);
+    return { texture: t, aspect: t.image.width / t.image.height };
+  }, [text]);
+
+  return (
+    <mesh position={position} rotation={[0, side * (Math.PI / 2), 0]}>
+      <planeGeometry args={[height * aspect, height]} />
+      <meshBasicMaterial map={texture} transparent opacity={opacity} depthWrite={false} />
+    </mesh>
+  );
+}
+
 export function CarModel() {
   const groupRef = useRef<THREE.Group>(null);
   const lidarBladeRef = useRef<THREE.Group>(null);
@@ -358,6 +410,41 @@ export function CarModel() {
           <mesh key={`vent-${x}`} position={[x, 0.91, -1.9]} material={mat.beltAccent}>
             <boxGeometry args={[0.05, 0.008, 0.4]} />
           </mesh>
+        ))}
+
+        {/* ── VEYRA BRANDING ── */}
+        {/* Front fascia V badge — two converging blades above the light bar */}
+        <group position={[0, 0.615, 2.46]} rotation={[-0.18, 0, 0]}>
+          <mesh position={[-0.033, 0, 0]} rotation={[0, 0, -0.55]} material={mat.lightBar}>
+            <boxGeometry args={[0.016, 0.105, 0.012]} />
+          </mesh>
+          <mesh position={[0.033, 0, 0]} rotation={[0, 0, 0.55]} material={mat.lightBar}>
+            <boxGeometry args={[0.016, 0.105, 0.012]} />
+          </mesh>
+        </group>
+
+        {/* Side wordmark — lower door area, both sides */}
+        {([1, -1] as const).map((side) => (
+          <BrandLabel
+            key={`wm-${side}`}
+            text="VEYRA"
+            position={[side * 0.886, 0.42, 0.45]}
+            side={side}
+            height={0.058}
+            opacity={0.8}
+          />
+        ))}
+
+        {/* Model label — rear quarter, above the rear arch */}
+        {([1, -1] as const).map((side) => (
+          <BrandLabel
+            key={`ml-${side}`}
+            text="VEYRA ONE"
+            position={[side * 0.878, 0.7, -1.5]}
+            side={side}
+            height={0.032}
+            opacity={0.6}
+          />
         ))}
 
         {/* ── WHEELS ── */}

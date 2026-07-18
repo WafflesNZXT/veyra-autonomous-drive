@@ -20,8 +20,8 @@ export interface ChapterData {
 export const CHAPTERS: ChapterData[] = [
   {
     id: 0,
-    title: "THE NEXT\nGENERATION\nROBOTAXI",
-    subtitle: "Scroll to explore the technology inside",
+    title: "VEYRA ONE",
+    subtitle: "Intelligence in Motion.",
     stats: [],
     annotations: [],
     cameraPos: [3.7, 1.15, 5.6],
@@ -31,7 +31,7 @@ export const CHAPTERS: ChapterData[] = [
   {
     id: 1,
     title: "LIDAR ARRAY",
-    subtitle: "The eyes that never blink",
+    subtitle: "VEYRA Sense · Eyes that never blink",
     stats: [
       "128-beam rotating LiDAR",
       "360° point cloud coverage",
@@ -48,7 +48,7 @@ export const CHAPTERS: ChapterData[] = [
   {
     id: 2,
     title: "FORWARD RADAR",
-    subtitle: "The guardian that sees through storms",
+    subtitle: "VEYRA Sense · Sees through any storm",
     stats: [
       "Long-range mmWave radar",
       "Penetrates rain, fog, darkness",
@@ -65,7 +65,7 @@ export const CHAPTERS: ChapterData[] = [
   {
     id: 3,
     title: "VISION SYSTEM",
-    subtitle: "Eyes in every direction",
+    subtitle: "VEYRA Sense · Vision in every direction",
     stats: [
       "8 × 4K cameras",
       "360° visual coverage",
@@ -84,7 +84,7 @@ export const CHAPTERS: ChapterData[] = [
   {
     id: 4,
     title: "PROXIMITY\nSENSORS",
-    subtitle: "Whiskers for the urban jungle",
+    subtitle: "VEYRA Shield · Guarding every inch",
     stats: [
       "16 ultrasonic sensors",
       "8m proximity detection",
@@ -103,7 +103,7 @@ export const CHAPTERS: ChapterData[] = [
   {
     id: 5,
     title: "ONBOARD\nCOMPUTE",
-    subtitle: "The brain that never sleeps",
+    subtitle: "VEYRA Core · The mind of the machine",
     stats: [
       "Custom AI accelerator",
       "254 TOPS inference",
@@ -119,13 +119,13 @@ export const CHAPTERS: ChapterData[] = [
   },
   {
     id: 6,
-    title: "AUTONOMOUS.\nINTELLIGENT.\nSAFE.",
-    subtitle: "40+ million miles of autonomous operation",
+    title: "INTELLIGENCE\nIN MOTION.",
+    subtitle: "VEYRA Network · Autonomous mobility, everywhere",
     stats: [
-      "All sensor systems fully integrated",
-      "Level 4 autonomous capability",
-      "Zero dependency on human input",
-      "Available in 50+ cities worldwide",
+      "VEYRA Sense — full perception integration",
+      "VEYRA Core — Level 4 autonomous compute",
+      "VEYRA Shield — zero-compromise safety",
+      "VEYRA Network — 50+ cities worldwide",
     ],
     annotations: [
       { id: "f-lidar", position: [0, 1.74, -0.3], label: "LIDAR", shortLabel: "LIDAR" },

@@ -1,0 +1,77 @@
+We are branding this autonomous vehicle concept project as:
+
+BRAND NAME: VEYRA
+FLAGSHIP VEHICLE: VEYRA One
+TAGLINE: Intelligence in Motion.
+
+Please update the website to reflect this brand identity consistently across the experience.
+
+## Brand direction
+VEYRA should feel:
+- premium
+- futuristic
+- minimal
+- sleek
+- intelligent
+- cinematic
+
+The tone should feel like a high-end autonomous mobility company / concept brand, not a student project.
+
+## Logo concept
+Create a simple, clean, original logo for VEYRA:
+- a minimalist “V” symbol
+- inspired by converging road lines, sensor beams, or forward motion
+- geometric and modern
+- clean enough to work as both a UI logo and a badge on the car
+- avoid overcomplicated or cartoonish styling
+
+Also create a VEYRA wordmark:
+- uppercase: VEYRA
+- wide spacing
+- modern sans-serif
+- premium, clean, and minimal
+
+## Apply the brand throughout the site
+Please add the VEYRA branding in the following places:
+- top-left navbar logo and wordmark
+- hero section main title
+- section headings where appropriate
+- footer / final credits area
+- loading screen if there is one
+
+## Apply branding to the car
+Please place subtle VEYRA branding on the vehicle itself:
+- a small VEYRA logo/badge centered on the front fascia
+- a subtle VEYRA wordmark on the side of the vehicle or lower door area
+- optional small “VEYRA One” model label on the side or near the rear
+- keep it tasteful and premium, not oversized
+- use subtle white / soft cyan / illuminated accent styling if it fits the scene
+
+The branding on the car should feel like a concept vehicle reveal, similar to a premium EV or autonomous concept car.
+
+## Copy updates
+Use this as the core brand language:
+
+Hero title:
+VEYRA ONE
+
+Hero subtitle:
+Intelligence in Motion.
+
+Hero support text:
+A premium autonomous vehicle concept designed to see, understand, and move with the world around it.
+
+Optional supporting technology naming:
+- VEYRA Sense = perception systems
+- VEYRA Core = onboard AI / compute
+- VEYRA Shield = safety systems
+- VEYRA Network = fleet and mobility ecosystem
+
+## Visual direction
+Keep:
+- the dark cinematic environment
+- the futuristic autonomous vehicle
+- glowing technical annotations
+- premium UI feel
+
+Make sure the VEYRA brand feels integrated, polished, and memorable across the entire experience.

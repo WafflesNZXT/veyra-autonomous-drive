@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { VeyraMark, VeyraWordmark } from './VeyraLogo';
 
 interface LoadingScreenProps {
   progress: number;
@@ -6,11 +7,11 @@ interface LoadingScreenProps {
 }
 
 const BOOT_LINES = [
-  'INITIALIZING SENSOR ARRAY...',
-  'CALIBRATING LIDAR SYSTEMS...',
+  'INITIALIZING VEYRA SENSE...',
+  'CALIBRATING LIDAR ARRAY...',
   'LOADING VISION MODELS...',
-  'ESTABLISHING COMPUTE LINK...',
-  'RUNNING SAFETY DIAGNOSTICS...',
+  'LINKING VEYRA CORE...',
+  'VEYRA SHIELD DIAGNOSTICS...',
   'ALL SYSTEMS NOMINAL',
 ];
 
@@ -47,17 +48,13 @@ export function LoadingScreen({ progress, onComplete }: LoadingScreenProps) {
       data-testid="loading-screen"
     >
       {/* Brand mark */}
-      <div className="mb-12 text-center">
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <div
-            className="w-8 h-8 border-2 border-cyan-400 rotate-45 flex items-center justify-center"
-            style={{ boxShadow: '0 0 16px rgba(0,212,255,0.5)' }}
-          >
-            <div className="w-2 h-2 bg-cyan-400 rotate-45" style={{ boxShadow: '0 0 8px rgba(0,212,255,0.9)' }} />
-          </div>
+      <div className="mb-12 flex flex-col items-center text-center">
+        <div className="mb-4" style={{ filter: 'drop-shadow(0 0 14px rgba(0,212,255,0.35))' }}>
+          <VeyraMark size={44} />
         </div>
-        <p className="font-mono text-xs tracking-[0.4em] text-cyan-400/70 uppercase">
-          AUTONOMY SYSTEMS
+        <VeyraWordmark className="text-2xl mb-2" />
+        <p className="font-mono text-[10px] tracking-[0.4em] text-cyan-400/70 uppercase">
+          Intelligence in Motion
         </p>
       </div>
 
