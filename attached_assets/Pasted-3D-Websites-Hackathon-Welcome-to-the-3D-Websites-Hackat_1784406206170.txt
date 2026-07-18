@@ -1,0 +1,84 @@
+3D Websites Hackathon
+Welcome to the 3D Websites Hackathon.
+
+This competition is all about creativity, aesthetics, and building unforgettable experiences on the web.
+
+Your challenge is to create the most visually stunning, immersive, and imaginative 3D website possible. There are no restrictions on theme, industry, or purpose. Build a futuristic city, a digital art gallery, an interactive story, a sci-fi experience, a fantasy world, a product showcase, a game-like website, or something nobody has ever seen before.
+
+This hackathon is beginner-friendly and open to anyone interested in web design, 3D graphics, digital art, UI/UX, creative coding, and interactive experiences.
+
+What Makes This Hackathon Different?
+Most hackathons focus on solving problems.
+
+This one focuses on creating wonder.
+
+We are looking for projects that make people stop scrolling and say:
+
+"Wow."
+
+Freedom to Create
+Participants may use:
+
+• AI tools and assistants
+• Online assets and models
+• Open-source libraries
+• Three.js, React Three Fiber, Babylon.js, WebGL, WebGPU, Spline, Blender, and other tools
+• Tutorials and learning resources
+
+The judging is based primarily on creativity, aesthetics, and overall experience.
+
+Technical complexity is optional.
+
+A beautiful and creative project can outperform a highly technical one.
+
+ 
+Requirements
+Submission Requirements
+To qualify for judging, each submission must include:
+
+A publicly accessible website link
+
+A project description explaining your idea and inspiration
+
+At least 3 screenshots of your project
+
+A short demo video (1–5 minutes) (Optional)
+
+A list of technologies and tools used
+
+Source code
+Requirements
+• Project must be web-based
+
+• Project must contain meaningful 3D or immersive visual elements
+
+• AI-generated content and assets are allowed
+
+• Existing assets and models are allowed
+
+• Teams and solo participants are both welcome
+
+• Projects must be appropriate for all audiences
+
+Technologies You Can Use (Not limited to):
+• Three.js
+
+• React Three Fiber
+
+• Babylon.js
+
+• Blender
+
+• Spline
+
+• WebGL
+
+• WebGPU
+
+• GSAP
+
+• Framer Motion
+
+The goal is not technical difficulty.
+
+The goal is to create the most memorable experience possible.
