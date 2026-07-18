@@ -1,0 +1,66 @@
+The vehicle and overall site are looking much better now, but there are still a few polish issues I want fixed before continuing.
+
+Main fixes needed
+1) Remove the bright glow blobs / reflection artifacts
+
+Some scroll sections show overly bright white/cyan glowing blobs on the car surface. These look like rendering artifacts and make the experience feel less polished.
+
+Please clean up the lighting and materials so the car still has:
+
+shadows
+subtle reflections
+a premium glossy finish
+cinematic rim lighting
+
+But remove:
+
+blown-out circular glow blobs
+oversized bloom hotspots
+distracting white/cyan flare artifacts during scroll
+2) Fix the wheels
+
+The wheels currently look a bit off in shape and detail. Please improve them so they feel more premium and realistic:
+
+make the wheel proportions cleaner and more consistent
+improve tire thickness and wheel fitment inside the wheel wells
+refine the rim design so it looks intentional and futuristic, not flat or awkward
+make sure the wheel geometry looks circular and solid from different camera angles
+reduce any weird clipping or shape distortion around the wheels
+keep the futuristic glowing accent in the center if it still looks good, but make it more subtle and integrated
+make sure front and rear wheels match stylistically and feel believable on the vehicle
+Technical / visual adjustments
+
+Please tune the scene and materials with these goals:
+
+Lighting / postprocessing
+reduce bloom intensity
+increase bloom/luminance threshold so only small highlights glow
+reduce bloom radius
+remove any lens flare / additive glow sprites / oversized emissive halos that are causing circular hotspots
+slightly lower exposure if needed
+inspect each scroll chapter and camera angle to ensure no blown-out artifacts appear
+Materials
+lower emissive intensity on headlights, LiDAR glow, and sensor accents
+increase roughness slightly on the body and glass so reflections are softer and more controlled
+reduce harsh specular blowouts
+keep subtle metallic reflections, but avoid clipped white highlights
+preserve the dark cinematic tone
+Vehicle polish
+keep the improved car body
+preserve the sleek autonomous concept look
+keep the roof LiDAR and sensor storytelling
+maintain the premium futuristic robotaxi feel
+keep the current dark immersive environment and glowing annotation system
+Final goal
+
+The final result should feel like a premium autonomous vehicle reveal for a hackathon:
+
+clean
+polished
+visually impressive
+smooth during scroll
+no distracting bright blobs
+better wheels
+subtle, controlled reflectance instead of giant glowing artifacts
+
+Do not spend time on backend work. Focus on front-end visual polish, vehicle quality, wheel refinement, lighting cleanup, and scroll presentation.

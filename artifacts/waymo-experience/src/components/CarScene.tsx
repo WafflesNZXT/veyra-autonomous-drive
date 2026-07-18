@@ -79,13 +79,13 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
         shadow-mapSize-height={1024}
       />
       {/* Cool rim light — carves the silhouette from behind */}
-      <directionalLight position={[-7, 3.5, -6]} intensity={2.8} color="#4d9fff" />
+      <directionalLight position={[-7, 3.5, -6]} intensity={1.8} color="#4d9fff" />
       {/* Cyan kicker — top-rear halo on roofline */}
-      <spotLight position={[0, 7, -8]} intensity={2.2} angle={0.65} penumbra={0.9} color="#00d4ff" />
+      <spotLight position={[0, 7, -8]} intensity={1.1} angle={0.65} penumbra={0.9} color="#00d4ff" />
       {/* Underglow */}
-      <pointLight position={[0, GROUND_Y + 0.3, 0]} intensity={2.5} color="#0033aa" distance={5} />
+      <pointLight position={[0, GROUND_Y + 0.3, 0]} intensity={0.9} color="#0033aa" distance={5} />
       {/* Side fill */}
-      <pointLight position={[4, 1, 4]} intensity={0.9} color="#1a4d66" distance={9} />
+      <pointLight position={[4, 1, 4]} intensity={0.6} color="#1a4d66" distance={9} />
 
       {/* Floor glow plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, GROUND_Y - 0.08, 0]}>
@@ -93,7 +93,7 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
         <meshBasicMaterial
           color="#000d1a"
           transparent
-          opacity={0.6}
+          opacity={0.35}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -131,10 +131,11 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
 
       <EffectComposer multisampling={0}>
         <Bloom
-          luminanceThreshold={0.28}
-          luminanceSmoothing={0.9}
+          luminanceThreshold={0.75}
+          luminanceSmoothing={0.4}
           mipmapBlur
-          intensity={1.35}
+          radius={0.5}
+          intensity={0.5}
         />
         <Vignette eskil={false} offset={0.12} darkness={1.0} />
       </EffectComposer>

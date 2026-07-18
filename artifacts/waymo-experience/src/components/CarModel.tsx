@@ -83,19 +83,19 @@ export function CarModel() {
   const mat = useMemo(() => ({
     body: new THREE.MeshPhysicalMaterial({
       color: 0x0b0e16,
-      metalness: 0.9,
-      roughness: 0.08,
+      metalness: 0.85,
+      roughness: 0.18,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.06,
-      envMapIntensity: 1.5,
+      clearcoatRoughness: 0.15,
+      envMapIntensity: 0.9,
     }),
     glass: new THREE.MeshPhysicalMaterial({
       color: 0x060c16,
-      metalness: 0.35,
-      roughness: 0.03,
-      envMapIntensity: 2.4,
+      metalness: 0.3,
+      roughness: 0.1,
+      envMapIntensity: 1.3,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.02,
+      clearcoatRoughness: 0.08,
     }),
     trim: new THREE.MeshStandardMaterial({
       color: 0x05070a,
@@ -130,11 +130,37 @@ export function CarModel() {
       metalness: 0.5,
       roughness: 0.6,
     }),
-    hubGlow: new THREE.MeshBasicMaterial({ color: 0x00d4ff }),
-    lightBar: new THREE.MeshBasicMaterial({ color: 0xd8fbff }),
-    headlight: new THREE.MeshBasicMaterial({ color: 0xbdf3ff }),
-    taillight: new THREE.MeshBasicMaterial({ color: 0xff2438 }),
-    lidarGlow: new THREE.MeshBasicMaterial({ color: 0x00e5ff }),
+    hubGlow: new THREE.MeshStandardMaterial({
+      color: 0x033844,
+      emissive: new THREE.Color(0x00a8cc),
+      emissiveIntensity: 0.5,
+      metalness: 0.6,
+      roughness: 0.4,
+    }),
+    lightBar: new THREE.MeshStandardMaterial({
+      color: 0x9adbe8,
+      emissive: new THREE.Color(0xbfeef8),
+      emissiveIntensity: 0.85,
+      roughness: 0.3,
+    }),
+    headlight: new THREE.MeshStandardMaterial({
+      color: 0x7fc4d8,
+      emissive: new THREE.Color(0x9fe4f4),
+      emissiveIntensity: 0.7,
+      roughness: 0.3,
+    }),
+    taillight: new THREE.MeshStandardMaterial({
+      color: 0x8c1420,
+      emissive: new THREE.Color(0xff2438),
+      emissiveIntensity: 0.65,
+      roughness: 0.3,
+    }),
+    lidarGlow: new THREE.MeshStandardMaterial({
+      color: 0x066a7a,
+      emissive: new THREE.Color(0x00c4dd),
+      emissiveIntensity: 0.7,
+      roughness: 0.35,
+    }),
     lidarGlass: new THREE.MeshPhysicalMaterial({
       color: 0x041018,
       metalness: 0.1,
@@ -155,9 +181,9 @@ export function CarModel() {
       envMapIntensity: 0.8,
     }),
     stageRing: new THREE.MeshBasicMaterial({
-      color: 0x00d4ff,
+      color: 0x00879e,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.32,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     }),
@@ -335,16 +361,16 @@ export function CarModel() {
         ))}
 
         {/* ── WHEELS ── */}
-        <AeroWheel position={[0.72, 0.34, 1.45]} side={1} mat={mat} />
-        <AeroWheel position={[-0.72, 0.34, 1.45]} side={-1} mat={mat} />
-        <AeroWheel position={[0.72, 0.34, -1.45]} side={1} mat={mat} />
-        <AeroWheel position={[-0.72, 0.34, -1.45]} side={-1} mat={mat} />
+        <AeroWheel position={[0.72, 0.325, 1.45]} side={1} mat={mat} />
+        <AeroWheel position={[-0.72, 0.325, 1.45]} side={-1} mat={mat} />
+        <AeroWheel position={[0.72, 0.325, -1.45]} side={1} mat={mat} />
+        <AeroWheel position={[-0.72, 0.325, -1.45]} side={-1} mat={mat} />
       </group>
     </group>
   );
 }
 
-/** Covered turbine-style aero wheel — futuristic, premium, easy to read */
+/** Five-spoke concept wheel — clean proportions, recessed rim face, subtle accent */
 function AeroWheel({
   position,
   side,
@@ -354,41 +380,57 @@ function AeroWheel({
   side: 1 | -1;
   mat: Record<string, THREE.Material>;
 }) {
-  const slots = useMemo(() => {
-    return Array.from({ length: 8 }).map((_, i) => (i / 8) * Math.PI * 2);
-  }, []);
+  const spokes = useMemo(
+    () => Array.from({ length: 5 }).map((_, i) => (i / 5) * Math.PI * 2),
+    [],
+  );
+
+  const R = 0.325; // tire radius — clears the 0.48 wheel arch cleanly
 
   return (
     <group position={position}>
-      {/* Tire */}
+      {/* Tire — single solid cylinder, high segment count for a true circle */}
       <mesh rotation={[0, 0, Math.PI / 2]} material={mat.tire} castShadow>
-        <cylinderGeometry args={[0.34, 0.34, 0.24, 48]} />
+        <cylinderGeometry args={[R, R, 0.25, 64]} />
       </mesh>
-      {/* Rounded sidewall */}
-      <mesh position={[side * 0.1, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.tire}>
-        <torusGeometry args={[0.3, 0.045, 12, 48]} />
+      {/* Outer sidewall chamfer — flush, hugs the tire edge */}
+      <mesh position={[side * 0.125, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.tire}>
+        <torusGeometry args={[R - 0.028, 0.028, 12, 64]} />
       </mesh>
-      {/* Solid aero disc */}
+
+      {/* Rim barrel — recessed inside the tire */}
       <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rim}>
-        <cylinderGeometry args={[0.245, 0.245, 0.25, 48]} />
+        <cylinderGeometry args={[0.235, 0.235, 0.2, 64]} />
       </mesh>
-      {/* Turbine slots — radial recesses on outer face */}
-      {slots.map((a, i) => (
-        <mesh
-          key={i}
-          position={[side * 0.127, Math.cos(a) * 0.14, Math.sin(a) * 0.14]}
-          rotation={[a, 0, 0]}
-          material={mat.rimSlot}
-        >
-          <boxGeometry args={[0.008, 0.13, 0.035]} />
-        </mesh>
+
+      {/* Outer rim lip ring — metallic, defines the wheel face */}
+      <mesh position={[side * 0.105, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.rim}>
+        <torusGeometry args={[0.235, 0.014, 12, 64]} />
+      </mesh>
+
+      {/* Five twin-spoke pairs — solid, embedded from hub to lip */}
+      {spokes.map((a, i) => (
+        <group key={i} rotation={[a, 0, 0]}>
+          <mesh position={[side * 0.055, 0.125, 0.021]} material={mat.rim}>
+            <boxGeometry args={[0.09, 0.235, 0.026]} />
+          </mesh>
+          <mesh position={[side * 0.055, 0.125, -0.021]} material={mat.rim}>
+            <boxGeometry args={[0.09, 0.235, 0.026]} />
+          </mesh>
+        </group>
       ))}
-      {/* Center hub + emissive ring */}
-      <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rim}>
-        <cylinderGeometry args={[0.07, 0.07, 0.27, 24]} />
+
+      {/* Dark backing disc — hides through-gaps between spokes */}
+      <mesh position={[side * -0.02, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mat.rimSlot}>
+        <cylinderGeometry args={[0.23, 0.23, 0.06, 64]} />
       </mesh>
-      <mesh position={[side * 0.136, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.hubGlow}>
-        <torusGeometry args={[0.075, 0.007, 8, 32]} />
+
+      {/* Center hub — flat cap with recessed accent ring */}
+      <mesh rotation={[0, 0, Math.PI / 2]} material={mat.rim}>
+        <cylinderGeometry args={[0.075, 0.075, 0.215, 32]} />
+      </mesh>
+      <mesh position={[side * 0.104, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mat.hubGlow}>
+        <torusGeometry args={[0.052, 0.006, 8, 32]} />
       </mesh>
     </group>
   );

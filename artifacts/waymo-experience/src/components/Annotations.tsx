@@ -59,10 +59,10 @@ function AnnotationPin({
       dotRef.current.scale.setScalar(s);
     }
     if (glowRef.current) {
-      const gs = 1 + Math.sin(t * 2.8 + delayIndex * 2.1) * 0.5;
+      const gs = 1 + Math.sin(t * 2.8 + delayIndex * 2.1) * 0.3;
       glowRef.current.scale.setScalar(gs);
       const m = glowRef.current.material as THREE.MeshBasicMaterial;
-      m.opacity = 0.35 + Math.sin(t * 2.8 + delayIndex * 2.1) * 0.2;
+      m.opacity = 0.2 + Math.sin(t * 2.8 + delayIndex * 2.1) * 0.1;
     }
   });
 
@@ -80,11 +80,11 @@ function AnnotationPin({
 
       {/* Outer glow halo */}
       <mesh ref={glowRef}>
-        <sphereGeometry args={[0.075, 16, 16]} />
+        <sphereGeometry args={[0.065, 16, 16]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.4}
+          opacity={0.25}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
