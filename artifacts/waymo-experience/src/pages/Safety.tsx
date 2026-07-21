@@ -1,4 +1,5 @@
 import { SitePage, PageHero, Section, TechCard } from '@/components/SitePage';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const PRINCIPLES = [
   {
@@ -72,15 +73,17 @@ export default function Safety() {
       {/* Principles */}
       <Section eyebrow="Design Principles" title="Six rules VEYRA One never breaks" accent="#22c55e">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PRINCIPLES.map((p) => (
-            <TechCard key={p.title} {...p} accent="#22c55e" />
+          {PRINCIPLES.map((principle, index) => (
+            <ScrollReveal key={principle.title} delay={index * 70}>
+              <TechCard {...principle} accent="#22c55e" />
+            </ScrollReveal>
           ))}
         </div>
       </Section>
 
       {/* Accessibility */}
       <Section eyebrow="For Everyone" title="Accessible by default" accent="#22c55e">
-        <div className="grid md:grid-cols-2 gap-10 text-white/50 leading-relaxed text-base">
+        <ScrollReveal className="grid md:grid-cols-2 gap-10 text-white/50 leading-relaxed text-base">
           <p>
             A vehicle without a driver must speak for itself. VEYRA One announces arrivals audibly
             and visually, kneels for step-free entry in the concept design, and keeps doorways,
@@ -91,7 +94,7 @@ export default function Safety() {
             of every ability always know where they are, what happens next, and how to reach a
             human at any moment.
           </p>
-        </div>
+        </ScrollReveal>
       </Section>
 
       <div className="px-6 md:px-10 pb-4">

@@ -8,9 +8,11 @@ interface AnnotationsProps {
   annotations: AnnotationData[];
   isFinale?: boolean;
   accentColor?: string;
+  isMobile?: boolean;
+  isCompactLandscape?: boolean;
 }
 
-export function Annotations({ annotations, isFinale = false, accentColor = '#00d4ff' }: AnnotationsProps) {
+export function Annotations({ annotations, isFinale = false, accentColor = '#00d4ff', isMobile = false, isCompactLandscape = false }: AnnotationsProps) {
   return (
     <group>
       {annotations.map((ann, i) => (
@@ -20,6 +22,8 @@ export function Annotations({ annotations, isFinale = false, accentColor = '#00d
           isFinale={isFinale}
           accentColor={accentColor}
           delayIndex={i}
+          isMobile={isMobile}
+          isCompactLandscape={isCompactLandscape}
         />
       ))}
       {isFinale && annotations.length > 1 && (
@@ -34,11 +38,15 @@ function AnnotationPin({
   isFinale,
   accentColor,
   delayIndex,
+  isMobile,
+  isCompactLandscape,
 }: {
   annotation: AnnotationData;
   isFinale: boolean;
   accentColor: string;
   delayIndex: number;
+  isMobile: boolean;
+  isCompactLandscape: boolean;
 }) {
   const dotRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -69,6 +77,7 @@ function AnnotationPin({
   if (!visible) return null;
 
   const color = new THREE.Color(accentColor);
+  const mobileOffset = getMobileAnnotationOffset(annotation.id, isCompactLandscape);
 
   return (
     <group position={pos}>
@@ -92,20 +101,21 @@ function AnnotationPin({
 
       {/* HTML label — Drei keeps it facing camera automatically */}
       <Html
-        position={[0.14, 0.08, 0]}
+        position={isMobile ? mobileOffset : [0.14, 0.08, 0]}
         center={false}
         zIndexRange={[200, 100]}
-        className="pointer-events-none select-none"
+        className={`pointer-events-none select-none ${isMobile ? 'annotation-mobile' : ''}`}
         style={{ width: 'max-content' }}
       >
         <div
-          className="flex items-center gap-1.5 annotation-label"
+          className={`flex items-center gap-1.5 annotation-label ${isMobile ? 'annotation-label-mobile' : ''}`}
           style={{
             animationDelay: `${delayIndex * 0.1}s`,
           }}
         >
           {/* Connector line */}
           <div
+            className="annotation-connector"
             style={{
               width: 20,
               height: 1,
@@ -115,6 +125,7 @@ function AnnotationPin({
           />
           {/* Label chip */}
           <div
+            className="annotation-chip"
             style={{
               background: 'rgba(4, 6, 14, 0.88)',
               border: `1px solid ${accentColor}66`,
@@ -140,6 +151,22 @@ function AnnotationPin({
       </Html>
     </group>
   );
+}
+
+function getMobileAnnotationOffset(id: string, isCompactLandscape: boolean): [number, number, number] {
+  const offsets: Record<string, [number, number, number]> = {
+    'lidar-main': [0.12, 0.24, 0],
+    'front-radar': isCompactLandscape ? [-1.25, 0.55, 0] : [0.16, 0.18, 0],
+    'cam-fl': [0.12, 0.16, 0],
+    'cam-fr': [-0.4, 0.16, 0],
+    'cam-side': [-0.38, 0.14, 0],
+    'ultra-fl': [0.12, 0.15, 0],
+    'ultra-fr': [-0.38, 0.15, 0],
+    'ultra-rl': [-0.35, 0.15, 0],
+    compute: [-1.05, 0.18, 0],
+  };
+
+  return offsets[id] ?? [0.12, 0.14, 0];
 }
 
 function FinaleConnections({ annotations }: { annotations: AnnotationData[] }) {

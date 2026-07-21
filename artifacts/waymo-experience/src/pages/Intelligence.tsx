@@ -1,4 +1,5 @@
 import { SitePage, PageHero, Section, TechCard } from '@/components/SitePage';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const SENSORS = [
   {
@@ -86,8 +87,10 @@ export default function Intelligence() {
       {/* Sensor overview */}
       <Section eyebrow="VEYRA Sense" title="Four senses, one picture">
         <div className="grid sm:grid-cols-2 gap-4">
-          {SENSORS.map((s) => (
-            <TechCard key={s.title} {...s} />
+          {SENSORS.map((sensor, index) => (
+            <ScrollReveal key={sensor.title} delay={index * 80}>
+              <TechCard {...sensor} />
+            </ScrollReveal>
           ))}
         </div>
       </Section>
@@ -96,7 +99,8 @@ export default function Intelligence() {
       <Section eyebrow="VEYRA Core" title="Perception to decision" accent="#f59e0b">
         <div className="grid md:grid-cols-4 gap-4">
           {PIPELINE.map((p, i) => (
-            <div key={p.step} className="relative border border-white/8 bg-white/[0.02] p-6">
+            <ScrollReveal key={p.step} delay={i * 80}>
+              <div className="relative border border-white/8 bg-white/[0.02] p-6">
               <div className="absolute top-0 left-0 h-px w-10" style={{ background: p.accent }} />
               <p className="font-mono text-2xl mb-4" style={{ color: p.accent }}>{p.step}</p>
               <h3 className="font-sans font-semibold text-white/90 mb-2">{p.title}</h3>
@@ -104,14 +108,15 @@ export default function Intelligence() {
               {i < PIPELINE.length - 1 && (
                 <span className="hidden md:block absolute top-1/2 -right-3 text-white/20 font-mono">→</span>
               )}
-            </div>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </Section>
 
       {/* Compute */}
       <Section eyebrow="Onboard AI" title="VEYRA Core" accent="#f59e0b">
-        <div className="grid md:grid-cols-3 gap-10">
+        <ScrollReveal className="grid md:grid-cols-3 gap-10">
           <div className="md:col-span-2 space-y-5 text-white/50 leading-relaxed text-base">
             <p>
               At the rear deck of VEYRA One sits a purpose-built AI computer: a custom accelerator
@@ -138,7 +143,7 @@ export default function Intelligence() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </Section>
     </SitePage>
   );

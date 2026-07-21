@@ -14,6 +14,8 @@ import { scrollState } from '../hooks/useScrollProgress';
 // Pre-allocate to avoid garbage collection in render loop
 const _camA = new THREE.Vector3();
 const _camB = new THREE.Vector3();
+const _lookA = new THREE.Vector3();
+const _lookB = new THREE.Vector3();
 const _lookAt = new THREE.Vector3(0, 0.15, 0);
 const _ease = gsap.parseEase('power2.inOut');
 
@@ -24,10 +26,21 @@ const GROUND_Y = -0.6;
 const ENTRANCE_END = 0.1;
 const ENTRANCE_DROP = 5.5;
 
+const MOBILE_CHAPTER_VIEWS = [
+  { cameraPos: [4.4, 1.5, 7.4], target: [0, 0.25, 0] },
+  { cameraPos: [2.1, 3.6, 6.9], target: [0, 0.92, -0.3] },
+  { cameraPos: [0, 1.2, 8.4], target: [0, 0.45, 1.25] },
+  { cameraPos: [5.7, 1.75, 5.8], target: [0, 0.75, 0.35] },
+  { cameraPos: [4.5, 1.2, 6.7], target: [0, 0.35, 1.0] },
+  { cameraPos: [-4.5, 2.1, -7.2], target: [0, 0.9, -1.35] },
+  { cameraPos: [5.0, 2.0, 7.8], target: [0, 0.35, 0] },
+] as const;
+
 export function CarScene({ activeChapter }: { activeChapter: number }) {
   const carGroup = useRef<THREE.Group>(null);
   const stageGroup = useRef<THREE.Group>(null);
-  const { camera } = useThree();
+  const { camera, size } = useThree();
+  const isMobileViewport = size.width <= 768 || size.height <= 520;
 
   useLayoutEffect(() => {
     const c = CHAPTERS[0];
@@ -39,6 +52,13 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
 
   useFrame(() => {
     if (!carGroup.current) return;
+
+    const expectedFov = isMobileViewport ? (size.width > size.height ? 56 : 58) : 50;
+    const perspectiveCamera = camera as THREE.PerspectiveCamera;
+    if (perspectiveCamera.fov !== expectedFov) {
+      perspectiveCamera.fov = expectedFov;
+      perspectiveCamera.updateProjectionMatrix();
+    }
 
     // Cinematic entrance — car + stage rest below frame at the hero,
     // then rise smoothly into view as scrolling begins.
@@ -62,10 +82,22 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
     carGroup.current.rotation.x = THREE.MathUtils.lerp(curr.carRotation[0], next.carRotation[0], t);
     carGroup.current.rotation.y = THREE.MathUtils.lerp(curr.carRotation[1], next.carRotation[1], t);
     carGroup.current.rotation.z = THREE.MathUtils.lerp(curr.carRotation[2], next.carRotation[2], t);
+    carGroup.current.scale.setScalar(isMobileViewport ? (size.width > size.height ? 0.95 : 0.86) : 1);
 
     // Camera path — pre-allocated vectors
-    _camA.set(curr.cameraPos[0], curr.cameraPos[1], curr.cameraPos[2]);
-    _camB.set(next.cameraPos[0], next.cameraPos[1], next.cameraPos[2]);
+    if (isMobileViewport) {
+      const currentView = MOBILE_CHAPTER_VIEWS[currIdx];
+      const nextView = MOBILE_CHAPTER_VIEWS[nextIdx];
+      _camA.set(currentView.cameraPos[0], currentView.cameraPos[1], currentView.cameraPos[2]);
+      _camB.set(nextView.cameraPos[0], nextView.cameraPos[1], nextView.cameraPos[2]);
+      _lookA.set(currentView.target[0], currentView.target[1], currentView.target[2]);
+      _lookB.set(nextView.target[0], nextView.target[1], nextView.target[2]);
+      _lookAt.lerpVectors(_lookA, _lookB, t);
+    } else {
+      _camA.set(curr.cameraPos[0], curr.cameraPos[1], curr.cameraPos[2]);
+      _camB.set(next.cameraPos[0], next.cameraPos[1], next.cameraPos[2]);
+      _lookAt.set(0, 0.15, 0);
+    }
     camera.position.lerpVectors(_camA, _camB, t);
     camera.lookAt(_lookAt);
   });
@@ -141,6 +173,8 @@ export function CarScene({ activeChapter }: { activeChapter: number }) {
               annotations={chapter.annotations}
               isFinale={isFinale}
               accentColor={chapter.accentColor}
+              isMobile={isMobileViewport}
+              isCompactLandscape={isMobileViewport && size.width > size.height}
             />
           )}
         </group>

@@ -73,6 +73,31 @@ function buildCanopyGeometry(): THREE.BufferGeometry {
   return merged;
 }
 
+/** The compact VEYRA mark, rebuilt from the same paths used by the interface SVG. */
+function buildVeyraBadgeShapes() {
+  const scale = 0.0065;
+  const x = (value: number) => (value - 16) * scale;
+  const y = (value: number) => (16 - value) * scale;
+
+  const outer = new THREE.Shape();
+  outer.moveTo(x(3), y(5));
+  outer.lineTo(x(14.4), y(27));
+  outer.lineTo(x(17.6), y(27));
+  outer.lineTo(x(29), y(5));
+  outer.lineTo(x(25.2), y(5));
+  outer.lineTo(x(16), y(22.9));
+  outer.lineTo(x(6.8), y(5));
+  outer.closePath();
+
+  const accent = new THREE.Shape();
+  accent.moveTo(x(12), y(5));
+  accent.lineTo(x(16), y(12.8));
+  accent.lineTo(x(20), y(5));
+  accent.closePath();
+
+  return { outer, accent };
+}
+
 /** Renders wide-tracked brand text to a transparent canvas texture. */
 function makeLabelTexture(text: string, fontSize = 96, spacing = 30): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
@@ -131,6 +156,7 @@ export function CarModel() {
 
   const bodyGeo = useMemo(buildBodyGeometry, []);
   const canopyGeo = useMemo(buildCanopyGeometry, []);
+  const badgeShapes = useMemo(buildVeyraBadgeShapes, []);
 
   const mat = useMemo(() => ({
     body: new THREE.MeshPhysicalMaterial({
@@ -194,6 +220,20 @@ export function CarModel() {
       emissive: new THREE.Color(0xbfeef8),
       emissiveIntensity: 0.85,
       roughness: 0.3,
+    }),
+    badgeWhite: new THREE.MeshStandardMaterial({
+      color: 0xf6fbff,
+      emissive: new THREE.Color(0xd9f3ff),
+      emissiveIntensity: 0.3,
+      metalness: 0.3,
+      roughness: 0.35,
+    }),
+    badgeAccent: new THREE.MeshStandardMaterial({
+      color: 0x00b9de,
+      emissive: new THREE.Color(0x00a8cc),
+      emissiveIntensity: 0.42,
+      metalness: 0.25,
+      roughness: 0.32,
     }),
     headlight: new THREE.MeshStandardMaterial({
       color: 0x7fc4d8,
@@ -415,11 +455,11 @@ export function CarModel() {
         {/* ── VEYRA BRANDING ── */}
         {/* Front fascia V badge — two converging blades above the light bar */}
         <group position={[0, 0.615, 2.46]} rotation={[-0.18, 0, 0]}>
-          <mesh position={[-0.033, 0, 0]} rotation={[0, 0, -0.55]} material={mat.lightBar}>
-            <boxGeometry args={[0.016, 0.105, 0.012]} />
+          <mesh position={[0, 0, 0.008]} material={mat.badgeWhite} renderOrder={1}>
+            <shapeGeometry args={[badgeShapes.outer]} />
           </mesh>
-          <mesh position={[0.033, 0, 0]} rotation={[0, 0, 0.55]} material={mat.lightBar}>
-            <boxGeometry args={[0.016, 0.105, 0.012]} />
+          <mesh position={[0, 0, 0.009]} material={mat.badgeAccent} renderOrder={2}>
+            <shapeGeometry args={[badgeShapes.accent]} />
           </mesh>
         </group>
 
