@@ -1,4 +1,6 @@
 import { SitePage, PageHero, Section, TechCard } from '@/components/SitePage';
+import { ScrollReveal } from '@/components/ScrollReveal';
+import { useEffect, useRef, useState } from 'react';
 
 const ECOSYSTEM = [
   {
@@ -33,12 +35,73 @@ const ECOSYSTEM = [
   },
 ];
 
-const METRICS: { value: string; label: string; desc?: string }[] = [
-  { value: '50+', label: 'Cities', desc: 'Concept coverage' },
-  { value: '3×', label: 'Vehicle Utilization', desc: 'vs. a private car' },
-  { value: '<45s', label: 'Curb Time', desc: 'Per pickup' },
-  { value: '30%', label: 'Parking Reduction', desc: 'Up to, per district' },
+interface ImpactMetric {
+  target: number;
+  label: string;
+  desc?: string;
+  prefix?: string;
+  suffix?: string;
+}
+
+const METRICS: ImpactMetric[] = [
+  { target: 50, suffix: '+', label: 'Cities', desc: 'Concept coverage' },
+  { target: 3, suffix: '×', label: 'Vehicle Utilization', desc: 'vs. a private car' },
+  { target: 45, prefix: '<', suffix: 's', label: 'Curb Time', desc: 'Per pickup' },
+  { target: 30, suffix: '%', label: 'Parking Reduction', desc: 'Up to, per district' },
 ];
+
+function ImpactMetricValue({ target, prefix = '', suffix = '' }: ImpactMetric) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const node = ref.current;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!node || reducedMotion || !('IntersectionObserver' in window)) {
+      setValue(target);
+      return undefined;
+    }
+
+    let frame = 0;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+
+      observer.disconnect();
+      const start = performance.now();
+      const duration = 1500;
+
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setValue(Math.round(target * eased));
+
+        if (progress < 1) frame = requestAnimationFrame(tick);
+      };
+
+      frame = requestAnimationFrame(tick);
+    }, { threshold: 0.45 });
+
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [target]);
+
+  const displayPrefix = value === 0 ? '' : prefix;
+
+  return (
+    <p
+      ref={ref}
+      className="font-sans font-bold text-cyan-400 mb-3 whitespace-nowrap leading-none"
+      style={{ fontSize: 'clamp(2rem,3.5vw,2.75rem)' }}
+      aria-label={`${prefix}${target}${suffix}`}
+    >
+      {displayPrefix}{value}{suffix}
+    </p>
+  );
+}
 
 /** Stylized animated city-network diagram (pure SVG). */
 function NetworkMap() {
@@ -107,23 +170,20 @@ export default function Network() {
       {/* Ecosystem grid */}
       <Section eyebrow="Ecosystem" title="More than one car">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {ECOSYSTEM.map((e) => (
-            <TechCard key={e.title} {...e} />
+          {ECOSYSTEM.map((entry, index) => (
+            <ScrollReveal key={entry.title} delay={index * 70}>
+              <TechCard {...entry} />
+            </ScrollReveal>
           ))}
         </div>
       </Section>
 
       {/* Impact metrics */}
       <Section eyebrow="Urban Impact" title="What a fleet gives back" center>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 max-w-4xl mx-auto">
+        <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 max-w-4xl mx-auto">
           {METRICS.map((m) => (
             <div key={m.label} className="text-center flex flex-col items-center">
-              <p
-                className="font-sans font-bold text-cyan-400 mb-3 whitespace-nowrap leading-none"
-                style={{ fontSize: 'clamp(2rem,3.5vw,2.75rem)' }}
-              >
-                {m.value}
-              </p>
+              <ImpactMetricValue {...m} />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60 leading-relaxed">
                 {m.label}
               </p>
@@ -134,7 +194,7 @@ export default function Network() {
               )}
             </div>
           ))}
-        </div>
+        </ScrollReveal>
         <p className="mt-10 font-mono text-[10px] tracking-[0.2em] text-white/25 uppercase">
           Concept projections — illustrative of the design study
         </p>

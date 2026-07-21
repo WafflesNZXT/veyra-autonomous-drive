@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'wouter';
 import { SitePage, PageHero, Section } from '@/components/SitePage';
 import { VeyraMark } from '@/components/VeyraLogo';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 function LinkedInIcon() {
   return (
@@ -83,7 +84,7 @@ export default function Vision() {
 
       {/* Narrative */}
       <Section eyebrow="Why This Exists" title="The future of moving">
-        <div className="grid md:grid-cols-2 gap-10 text-white/50 leading-relaxed text-base">
+        <ScrollReveal className="grid md:grid-cols-2 gap-10 text-white/50 leading-relaxed text-base">
           <p>
             For a century, cities have been designed around the driver: lanes, signals, parking,
             fuel. Autonomy breaks that contract. When vehicles see everything, never tire, and
@@ -96,12 +97,12 @@ export default function Vision() {
             It was built to make the argument visually — that the safest driver we ever put on
             the road may not be a driver at all.
           </p>
-        </div>
+        </ScrollReveal>
       </Section>
 
       {/* Creator profile */}
       <Section eyebrow="Creator" title="Designed and built by Wafi Syed">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+        <ScrollReveal className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
           <CreatorPortrait />
           <div className="flex-1 text-center md:text-left max-w-2xl">
             <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-cyan-400/70 mb-4">
@@ -151,12 +152,12 @@ export default function Vision() {
               </p>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </Section>
 
       {/* Final CTA */}
       <Section center>
-        <div className="max-w-2xl mx-auto py-8">
+        <ScrollReveal className="max-w-2xl mx-auto py-8">
           <h2 className="font-sans font-bold tracking-tight text-[clamp(1.8rem,4vw,3rem)] mb-10">
             See the future move.
           </h2>
@@ -176,7 +177,7 @@ export default function Vision() {
               Explore VEYRA One
             </Link>
           </div>
-        </div>
+        </ScrollReveal>
       </Section>
     </SitePage>
   );

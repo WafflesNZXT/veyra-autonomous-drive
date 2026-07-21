@@ -149,7 +149,7 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
           className={`
             w-full flex
             ${isLeft ? 'justify-start pl-6 md:pl-14' : 'justify-end pr-6 md:pr-14'}
-            ${isRadar ? 'radar-panel-frame' : ''}
+            experience-chapter-panel-frame ${isRadar ? 'radar-panel-frame' : ''}
           `}
         >
           <div
@@ -157,13 +157,13 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
               max-w-xs md:max-w-sm w-full
               chapter-panel-reveal
               ${isLeft ? '' : 'text-right'}
-              ${isRadar ? 'radar-panel-content' : ''}
+              experience-chapter-panel-content ${isRadar ? 'radar-panel-content' : ''}
             `}
             data-testid={`chapter-panel-${chapterIndex}`}
           >
             {/* Chapter eyebrow */}
             <div
-              className={`flex items-center gap-3 mb-4 ${isLeft ? '' : 'flex-row-reverse'} ${isRadar ? 'radar-panel-eyebrow' : ''}`}
+              className={`flex items-center gap-3 mb-4 experience-chapter-panel-eyebrow ${isLeft ? '' : 'flex-row-reverse'} ${isRadar ? 'radar-panel-eyebrow' : ''}`}
             >
               <div
                 className="h-px w-8 flex-shrink-0"
@@ -178,7 +178,7 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
             </div>
 
             {/* Chapter title */}
-            <h2 className={`font-sans font-bold text-white leading-none mb-6 text-[clamp(1.8rem,4vw,3rem)] tracking-tight ${isRadar ? 'radar-panel-title' : ''}`}>
+            <h2 className={`font-sans font-bold text-white leading-none mb-6 text-[clamp(1.8rem,4vw,3rem)] tracking-tight experience-chapter-panel-title ${isRadar ? 'radar-panel-title' : ''}`}>
               {chapter.title.split('\n').map((line, i) => (
                 <span key={i} className="block">{line}</span>
               ))}
@@ -186,7 +186,7 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
 
             {/* Stats list */}
             <div
-              className={`border-l-2 pl-4 flex flex-col gap-2 ${isRadar ? 'radar-panel-stats' : ''}`}
+              className={`border-l-2 pl-4 flex flex-col gap-2 experience-chapter-panel-stats ${isRadar ? 'radar-panel-stats' : ''}`}
               style={{
                 borderColor: `${chapter.accentColor}55`,
                 ...(isLeft ? {} : { borderLeft: 'none', borderRight: `2px solid ${chapter.accentColor}55`, paddingLeft: 0, paddingRight: 16 }),
@@ -195,7 +195,7 @@ export function ChapterPanel({ chapterIndex, scrollProgress: _scrollProgress }: 
               {chapter.stats.map((stat, i) => (
                 <div
                   key={i}
-                  className={`flex items-center gap-2 stat-line-reveal ${isLeft ? '' : 'flex-row-reverse'} ${isRadar ? 'radar-panel-stat' : ''}`}
+                  className={`flex items-center gap-2 stat-line-reveal experience-chapter-panel-stat ${isLeft ? '' : 'flex-row-reverse'} ${isRadar ? 'radar-panel-stat' : ''}`}
                   style={{ animationDelay: `${i * 0.07 + 0.3}s` }}
                 >
                   <span

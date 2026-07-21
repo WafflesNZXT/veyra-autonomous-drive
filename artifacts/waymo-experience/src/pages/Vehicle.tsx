@@ -1,36 +1,27 @@
 import { SitePage, PageHero, Section, TechCard } from '@/components/SitePage';
 import { VehicleViewer } from '@/components/VehicleViewer';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
-const DESIGN_FEATURES = [
+const SUSTAINABILITY = [
   {
-    label: 'Exterior',
-    title: 'Monolithic Silhouette',
-    body: 'One continuous surface from nose to ducktail. No grille, no handles, no interruptions — the body reads as a single machined form shaped by airflow.',
+    label: 'Electric by Design',
+    title: 'Zero Tailpipe Emissions',
+    body: 'A fully electric drivetrain eliminates exhaust emissions while the vehicle is operating, helping improve local air quality where people live and move.',
   },
   {
-    label: 'Glasshouse',
-    title: 'Panoramic Canopy',
-    body: 'A raked, single-piece greenhouse wraps the cabin in glass. With no driver, every seat is a window seat facing the city.',
+    label: 'Smarter Movement',
+    title: 'Less Wasteful Motion',
+    body: 'Connected routing, coordinated pickups, and reduced unnecessary idling are designed to use energy and road space more intentionally.',
   },
   {
-    label: 'Lighting',
-    title: 'Signal Language',
-    body: 'A full-width light bar and angled DRL blades communicate intent — pedestrians and cyclists can read what VEYRA One is about to do.',
+    label: 'Cleaner Energy',
+    title: 'Built for a Changing Grid',
+    body: 'As electricity generation becomes cleaner, the lifecycle climate benefits of electric transportation can grow with it.',
   },
   {
-    label: 'Aero',
-    title: 'Turbine Wheels',
-    body: 'Five-spoke covered aero wheels reduce turbulence at the arches, extending range while keeping the profile calm and technical.',
-  },
-  {
-    label: 'Sensors',
-    title: 'Integrated Perception',
-    body: 'LiDAR, radar, cameras, and ultrasonics are designed into the body — not bolted on. Sensing is part of the design language.',
-  },
-  {
-    label: 'Interior',
-    title: 'Lounge Direction',
-    body: 'Concept direction: four facing seats, a floating console, and ambient light that follows the ride state. Space, not cockpit.',
+    label: 'Shared Mobility',
+    title: 'More From Every Vehicle',
+    body: 'A coordinated autonomous fleet can be designed around higher occupancy and more useful time on the road rather than inactive private vehicles.',
   },
 ];
 
@@ -94,18 +85,26 @@ export default function Vehicle() {
         </div>
       </Section>
 
-      {/* Feature grid */}
-      <Section eyebrow="Highlights" title="Feature language">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {DESIGN_FEATURES.map((f) => (
-            <TechCard key={f.title} {...f} />
+      {/* Sustainability */}
+      <Section eyebrow="Sustainability" title={<>Moving More.<br />Impacting Less.</>}>
+        <div className="max-w-3xl text-white/50 leading-relaxed text-base mb-10">
+          VEYRA One is imagined as a fully electric mobility platform—designed without tailpipe emissions and built for a transportation future powered by cleaner energy. When connected vehicles share routes, charging, and fleet intelligence, every journey can be planned with greater purpose.
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {SUSTAINABILITY.map((feature, index) => (
+            <ScrollReveal key={feature.title} delay={index * 80}>
+              <TechCard {...feature} />
+            </ScrollReveal>
           ))}
         </div>
+        <p className="mt-6 max-w-4xl font-mono text-[10px] tracking-[0.16em] uppercase leading-relaxed text-white/25">
+          Concept vision. Environmental outcomes depend on electricity generation, manufacturing, vehicle occupancy, routing, and real-world travel behavior.
+        </p>
       </Section>
 
       {/* Sensor placement */}
       <Section eyebrow="VEYRA Sense" title="Sensor placement" accent="#a855f7">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6">
+        <ScrollReveal className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6">
           {SENSOR_POINTS.map((s, i) => (
             <div key={s.name} className="flex gap-4 items-start">
               <span className="font-mono text-[10px] text-white/30 pt-1 w-6 flex-shrink-0">
@@ -117,19 +116,19 @@ export default function Vehicle() {
               </div>
             </div>
           ))}
-        </div>
+        </ScrollReveal>
       </Section>
 
       {/* Specs */}
       <Section eyebrow="Concept Specifications" title="VEYRA One — at a glance">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-0 border-t border-white/8">
+        <ScrollReveal className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-0 border-t border-white/8">
           {SPECS.map(([k, v]) => (
             <div key={k} className="flex items-baseline justify-between py-4 border-b border-white/8">
               <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-white/35">{k}</span>
               <span className="font-sans text-sm text-white/85 text-right">{v}</span>
             </div>
           ))}
-        </div>
+        </ScrollReveal>
         <p className="mt-6 font-mono text-[10px] tracking-[0.2em] text-white/25 uppercase">
           Concept figures — design study, not production claims
         </p>

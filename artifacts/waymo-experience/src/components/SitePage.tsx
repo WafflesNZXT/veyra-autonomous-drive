@@ -85,7 +85,7 @@ export function Section({
   center = false,
 }: {
   eyebrow?: string;
-  title?: string;
+  title?: ReactNode;
   accent?: string;
   children: ReactNode;
   center?: boolean;

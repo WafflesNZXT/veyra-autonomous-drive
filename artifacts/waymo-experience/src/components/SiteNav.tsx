@@ -30,7 +30,7 @@ export function SiteNav() {
           {/* Brand lockup */}
           <Link
             href="/"
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-3 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-4"
             onClick={() => setOpen(false)}
             data-testid="nav-brand"
           >
@@ -46,7 +46,7 @@ export function SiteNav() {
                 <Link
                   key={item.path}
                   href={item.path}
-                  className="relative font-mono text-[11px] tracking-[0.22em] uppercase transition-colors duration-300"
+                  className="relative font-mono text-[11px] tracking-[0.22em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-4"
                   style={{ color: active ? '#00d4ff' : 'rgba(255,255,255,0.55)' }}
                   data-testid={`nav-link-${item.label.toLowerCase()}`}
                 >
@@ -66,9 +66,11 @@ export function SiteNav() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden flex flex-col justify-center items-end gap-1.5 w-8 h-8 pointer-events-auto"
+            className="lg:hidden flex flex-col justify-center items-end gap-1.5 w-8 h-8 pointer-events-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-2"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
             data-testid="nav-hamburger"
           >
             <span
@@ -91,6 +93,7 @@ export function SiteNav() {
           opacity: open ? 1 : 0,
           pointerEvents: open ? 'all' : 'none',
         }}
+        id="mobile-menu"
         data-testid="mobile-menu"
       >
         {NAV_ITEMS.map((item, i) => {
@@ -100,7 +103,7 @@ export function SiteNav() {
               key={item.path}
               href={item.path}
               onClick={() => setOpen(false)}
-              className="font-sans text-2xl font-semibold tracking-[0.2em] uppercase transition-all duration-300"
+              className="font-sans text-2xl font-semibold tracking-[0.2em] uppercase transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-4"
               style={{
                 color: active ? '#00d4ff' : 'rgba(255,255,255,0.75)',
                 transitionDelay: open ? `${i * 40}ms` : '0ms',
